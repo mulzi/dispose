@@ -81,7 +81,7 @@ export default {
   data() {
     return {
       refreshing: false,
-      title: '',
+      title: 'XXX',
       type: 'user',
       actTab: 'wk',
       pageSize: 20,
@@ -137,10 +137,6 @@ export default {
         ? this.$t('message.noMore')
         : this.$t('message.noData');
     },
-  },
-  created() {
-  },
-  mounted: {
   },
   methods: {
     watchAddress() {
