@@ -1,0 +1,97 @@
+<template>
+  <div class="dialog-dispose-qr-wrap">
+    <van-dialog
+      class="dialog-box"
+      :show-cancel-button="false"
+      :show-confirm-button="false"
+      v-model="visible"
+    >
+      <div class="dialog-content">
+        <p class="p title">{{ $t('home.scanToDispose') }}</p>
+        <div class="dialog-qr-box">
+          <div id="qrcode" ref="qrcode"></div>
+        </div>
+        <p class="p desc">{{ $t('home.theQr').replace(/\{\{addr\}\}/, $store.state.address) }}</p>
+      </div>
+      <div class="cancel-box">
+        <van-icon
+          class="cancel-btn"
+          name="close"
+          @click="visible = false"
+        />
+      </div>
+    </van-dialog>
+  </div>
+</template>
+<script>
+import QRCode from 'qrcodejs2';
+export default {
+  data() {
+    return {
+      visible: false,
+    }
+  },
+  methods: {
+    creatQrCode(url) {
+      const dom = document.querySelector('.dialog-qr-box');
+      const width = dom.clientWidth;
+      this.$refs.qrcode.innerHTML = ''
+      new QRCode(this.$refs.qrcode, {
+        text: url, // 需要转换为二维码的内容
+        width: width,
+        height: width,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+
+      this.$toast.clear();
+    },
+    hide() {
+      this.visible = false;
+    },
+    show(url) {
+      this.visible = true;
+      setTimeout(() =>{
+        this.creatQrCode(url);
+      }, 0);
+    }
+  }
+}
+</script>
+<style scoped>
+.dialog-dispose-qr-wrap .title {
+  margin-bottom: 50px;
+  font-size: 30px;
+  font-weight: 400;
+  color: #091D42;
+  line-height: 48px;
+  text-align: center;
+}
+.dialog-dispose-qr-wrap .desc {
+  font-size: 26px;
+  font-weight: 400;
+  color: #666666;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: left;
+  line-height: 1.6;
+  word-break: break-all;
+  text-align: center;
+}
+.dialog-dispose-qr-wrap .dialog-qr-box {
+  width: 446px;
+  height: 446px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<style>
+.dialog-dispose-qr-wrap .desc .p {
+  margin: 12px 0;
+}
+.dialog-dispose-qr-wrap .desc .tit {
+  margin: 20px 0;
+  font-weight: bold;
+}
+</style>
