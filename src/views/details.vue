@@ -318,17 +318,8 @@ export default {
   margin: 10px 40px 40px;
   text-align: left;
   box-sizing: border-box;
-}
-.content .tr {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: left;
-  font-size: 26px;
-  font-weight: 400;
-  color: #091D42;
-  background: #fff;
-  border-radius: 20px;
+  max-width: 670px;
+  margin: 10px auto;
 }
 .content .tabs-wrap {
   display: flex;
@@ -349,15 +340,8 @@ export default {
   color: #ffa600;
   border-bottom: 6px solid #ffa600;
 }
-.content .tr .no {
-  flex: 1;
-}
-.content .tr .address {
-  flex: 5;
-}
-.content .tr .amount {
-  flex: 4;
-  text-align: right;
+.content .tabs-wrap .tab {
+  cursor: pointer;
 }
 
 .empty-wrap {
@@ -394,7 +378,7 @@ export default {
   margin-top: auto;
 }
 .coop-mail {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 500;
   color: #ADB0CA;
   text-align: center;

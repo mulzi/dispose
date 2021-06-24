@@ -204,7 +204,7 @@ export default {
   line-height: 1;
   margin-top: 30px;
   padding: 80px 30px 70px;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 500;
   color: #ADB0CA;
 }
@@ -247,7 +247,7 @@ export default {
   width: 100%;
   line-height: 42px;
   height: 42px;
-  font-size: 26px;
+  font-size: 28px;
 }
 .input-panel .btn {
   margin-top: 102px;
@@ -266,9 +266,10 @@ export default {
   color: #091D42;
 }
 .journal-list .journal-title .tip {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 500;
   color: #A65200;
+  cursor: pointer;
 }
 
 .journal-list .journal-item {
@@ -277,7 +278,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   border-radius: 20px;
-  font-size: 24px;
+  font-size: 25px;
   font-weight: 400;
   color: #ADB0CA;
 }

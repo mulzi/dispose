@@ -9,7 +9,8 @@ Vue.use(VueI18n);
 
 // ['en-US', 'zh-CN']
 let initLang = '';
-const ckLang = Cookies.get('lang');
+// const ckLang = Cookies.get('lang');
+const ckLang = 'zh-CN';
 // 从localStorage获取语言选择
 // if (['en-US', 'zh-CN'].includes(localStorage.lang)) {
 //   initLang = localStorage.lang;

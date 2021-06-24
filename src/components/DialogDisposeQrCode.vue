@@ -11,7 +11,8 @@
         <div class="dialog-qr-box">
           <div id="qrcode" ref="qrcode"></div>
         </div>
-        <p class="p desc">{{ $t('home.theQr').replace(/\{\{addr\}\}/, $store.state.address) }}</p>
+        <p class="p desc" v-if="role">{{ '商家销毁凭证收款码' }}</p>
+        <p class="p desc" v-else>{{ $t('home.theQr').replace(/\{\{addr\}\}/, $store.state.address) }}</p>
       </div>
       <div class="cancel-box">
         <van-icon
@@ -29,6 +30,7 @@ export default {
   data() {
     return {
       visible: false,
+      role: null,
     }
   },
   methods: {
@@ -50,11 +52,13 @@ export default {
     hide() {
       this.visible = false;
     },
-    show(url) {
+    show(url, role) {
       this.visible = true;
       setTimeout(() =>{
         this.creatQrCode(url);
       }, 0);
+
+      this.role = role;
     }
   }
 }

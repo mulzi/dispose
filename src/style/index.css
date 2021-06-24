@@ -69,8 +69,8 @@ input[type='number'] {
 .btn-light[disabled],
 .btn-light.disabled {
   background: #fff;
-  color: #babbc2 !important;
-  border: 2px solid #babbc2 !important;
+  color: #dadce4 !important;
+  border: 2px solid #dadce4 !important;
 }
 .btn-dark[disabled],
 .btn-dark.disabled {

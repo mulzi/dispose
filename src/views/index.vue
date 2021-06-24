@@ -9,11 +9,11 @@
         <span class="role">{{ $t('home.merchant') }}</span>
       </div>
       <div class="opt-item referrer" @click="handleRole('referrer')">
-        <img class="img" src="../assets/img/index/icon-merchant.png" alt="">
+        <img class="img" src="../assets/img/index/icon-referrer.png" alt="">
         <span class="role">{{ $t('home.referrer') }}</span>
       </div>
       <div class="opt-item user" @click="handleRole('user')">
-        <img class="img" src="../assets/img/index/icon-merchant.png" alt="">
+        <img class="img" src="../assets/img/index/icon-user.png" alt="">
         <span class="role">{{ $t('home.user') }}</span>
       </div>
       <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
@@ -83,6 +83,7 @@ export default {
   background: #fff;
   border-radius: 40px;
   margin: 0 auto 56px;
+  cursor: pointer;
 }
 .opt-item .img {
   width: 120px;

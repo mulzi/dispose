@@ -146,7 +146,7 @@ export default {
           }
         })
 
-        this.userInfo = user;
+        this.userInfo = user || {};
         if (user) {
           this.onRefresh();
         }
@@ -294,7 +294,7 @@ export default {
   line-height: 1;
   margin-top: 30px;
   padding: 80px 30px 70px;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 500;
   color: #ADB0CA;
 }
@@ -364,7 +364,7 @@ export default {
   color: #091D42;
 }
 .journal-list .journal-title .tip {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 500;
   color: #A65200;
 }
@@ -375,7 +375,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   border-radius: 20px;
-  font-size: 24px;
+  font-size: 25px;
   font-weight: 400;
   color: #ADB0CA;
 }

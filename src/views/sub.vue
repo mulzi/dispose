@@ -66,6 +66,8 @@ export default {
   text-align: left;
   box-sizing: border-box;
   padding-top: 40px;
+  max-width: 670px;
+  margin: 10px auto;
 }
 
 

@@ -96,6 +96,7 @@ export default {
     creatQrCode() {
       const address = this.$store.state.address;
       const dom = document.querySelector('.qr-box');
+      document.querySelector('#qrcode').innerHTML = '';
       const width = dom.clientWidth;
       new QRCode(this.$refs.qrcode, {
         text: address, // 需要转换为二维码的内容
@@ -110,9 +111,9 @@ export default {
     },
 
     handleShowQr() {
-      const url = window.location.origin + '/sub?role=user' + `&merchant=${this.address}`;
+      const url = window.location.origin + '/sub?role=user' + `&merchant=${this.address}&referrer=${this.address}`;
       console.log('url', url);
-      this.$refs.dialogQR.show(url);
+      this.$refs.dialogQR.show(url, 'merchant');
     },
 
     addressChange(addr) {
@@ -233,7 +234,7 @@ export default {
   line-height: 1;
   margin-top: 30px;
   padding: 80px 30px 70px;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 500;
   color: #ADB0CA;
 }
@@ -243,6 +244,7 @@ export default {
 }
 .top .qr-wrap {
   width: 150px;
+  cursor: pointer;
 }
 .top .qr-wrap .qr-box {
   width: 106px;
@@ -256,13 +258,14 @@ export default {
 }
 .asset-value {
   margin-top: 23px;
-  font-size: 48px;
+  font-size: 50px;
   font-weight: 500;
   color: #091D42;
 }
 .total-panel .address-line {
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 .total-panel .address-line .copy-icon {
   display: inline-block;
@@ -303,7 +306,7 @@ export default {
   box-sizing: border-box;
   background: #fff;
   border-radius: 20px;
-  font-size: 24px;
+  font-size: 25px;
   font-weight: 400;
   color: #ADB0CA;
 }

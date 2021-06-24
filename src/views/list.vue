@@ -28,7 +28,7 @@
           :finished-text="dataText"
           @load="onLoad"
         >
-          <div class="tr" v-for="(item, index) in list" :key="index" @click="handleToDetail(item)">
+          <div class="tr tb" v-for="(item, index) in list" :key="index" @click="handleToDetail(item)">
             <div class="td no">{{ index + 1 }}</div>
             <div class="td address">{{ addressChange(item.userAddress || item.midAddress || item.sellerAddress) }}</div>
             <div class="td amount">{{ fromWei(item.amount) }} DST</div>
@@ -97,7 +97,7 @@ export default {
     },
 
     addressChange(addr) {
-      return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 10);
+      return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 6);
     },
 
     async queryUser(from) {
@@ -295,19 +295,21 @@ export default {
   padding: 20px 20px 40px;
   background: #fff;
   border-radius: 40px;
+  max-width: 670px;
+  margin: 10px auto;
 }
 .content .tr {
   display: flex;
   align-items: center;
   justify-content: space-between;
   text-align: left;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 400;
   color: #091D42;
   padding: 20px 0;
 }
 .content .tr-head {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 400;
   color: #ADB0CA;
 }
@@ -321,12 +323,16 @@ export default {
   flex: 4;
   text-align: right;
 }
+.content .tb {
+  cursor: pointer;
+}
 
 .coop-mail {
   font-size: 24px;
   font-weight: 500;
   color: #ADB0CA;
   text-align: center;
+  margin-top: 30px;
   margin-bottom: 30px;
 }
 @media only screen and (max-width: 750px) {
