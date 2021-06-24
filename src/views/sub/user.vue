@@ -96,6 +96,7 @@ export default {
     inputValue(value) {
       if (value > this.tsrBalance) {
         this.inputValue = this.tsrBalance;
+        this.$toast.fail('TSR余额'+this.tsrBalance);
       }
     }
   },
@@ -270,7 +271,7 @@ export default {
     },
 
     addressChange(addr) {
-      return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 10);
+      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 10);
     },
 
     copyCallback: debounce(function() {

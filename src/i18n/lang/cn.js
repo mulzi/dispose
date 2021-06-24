@@ -95,7 +95,7 @@ const cn = {
     merchantSub: '商家子系统',
     referrerSub: '推荐人子系统',
     userSub: '用户子系统',
-    qrCode: '收款二维码',
+    qrCode: '商家收款二维码',
     cooperationEmail: '商务合作请联系 business@erc20destroy.com',
     merchantTotal: '总额（DST）',
     recommendTotal: '推荐成交总额(DST)',

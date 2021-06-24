@@ -117,7 +117,7 @@ export default {
     },
 
     addressChange(addr) {
-      return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 10);
+      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 10);
     },
 
     async reqMerchantInfo() {
@@ -243,14 +243,17 @@ export default {
   justify-content: space-between;
 }
 .top .qr-wrap {
-  width: 150px;
+  width: 170px;
   cursor: pointer;
 }
 .top .qr-wrap .qr-box {
-  width: 106px;
-  height: 106px;
+  width: 130px;
+  height: 130px;
   margin-left: auto;
   margin-right: auto;
+}
+.top .qr-wrap .desc {
+  font-size: 22px;
 }
 .top .desc {
   text-align: center;

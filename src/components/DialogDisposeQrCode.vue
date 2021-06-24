@@ -12,7 +12,7 @@
           <div id="qrcode" ref="qrcode"></div>
         </div>
         <p class="p desc" v-if="role">{{ '商家销毁凭证收款码' }}</p>
-        <p class="p desc" v-else>{{ $t('home.theQr').replace(/\{\{addr\}\}/, $store.state.address) }}</p>
+        <p class="p desc" v-else>{{ $t('home.theQr').replace(/\{\{addr\}\}/, addressChange($store.state.address)) }}</p>
       </div>
       <div class="cancel-box">
         <van-icon
@@ -34,6 +34,9 @@ export default {
     }
   },
   methods: {
+    addressChange(addr) {
+      return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 6);
+    },
     creatQrCode(url) {
       const dom = document.querySelector('.dialog-qr-box');
       const width = dom.clientWidth;

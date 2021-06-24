@@ -176,7 +176,7 @@ export default {
 
 
     addressChange(addr) {
-      return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 10);
+      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 10);
     },
 
     handleToList() {
