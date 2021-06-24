@@ -23,13 +23,13 @@
         <div class="input-wrap">
           <input
             class="input"
-            type="text"
+            type="number"
             v-model="inputValue"
             oninput="if(value.length>10)value=value.slice(0,10)"
             placeholder="销毁数量"
           />
         </div>
-        <div class="btn btn-dark" v-intervalclick='{ func: handleDispose }'>{{ $t('message.confirm') }}</div>
+        <button class="btn btn-dark btn-dispose" :disabled="isDisabled" v-intervalclick='{ func: handleDispose }'>{{ $t('message.confirm') }}</button>
       </div>
       <div class="journal-list">
         <div class="journal-title">
@@ -82,6 +82,9 @@ export default {
       return this.list.length > 0
         ? this.$t('message.noMore')
         : this.$t('message.noData');
+    },
+    isDisabled() {
+      return +this.inputValue <= 0;
     }
   },
   watch: {
@@ -192,14 +195,15 @@ export default {
 
     // 执行销毁
     async handleDispose() {
+      const extraData = disposeAddress;
       let txHash = '';
       this.$tsrContract.methods
-        .approveAndCall(disposeAddress, this.$web3.utils.toWei(this.inputValue), )
+        .approveAndCall(disposeAddress, this.$web3.utils.toWei(this.inputValue), extraData)
         .send({
           from: this.$store.state.address
         })
-        .on('transactionHash', (hash) =>{
-          txHash = hash
+        .on('transactionHash', (hash) => {
+          txHash = hash;
           this.reqHashState(txHash, 'dispose');
         })
         .on('receipt', (receipt) => {
@@ -313,8 +317,9 @@ export default {
   height: 42px;
   font-size: 26px;
 }
-.input-panel .btn {
+.input-panel .btn-dispose {
   margin-top: 60px;
+  width: 500px;
 }
 
 .journal-list {
