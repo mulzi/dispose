@@ -1,7 +1,7 @@
 <template>
   <div class="role-wrapper">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <TheHeader :title="$t('home.title')" @click-left="handleBack" />
+      <TheHeaderSub :title="$t('home.title')" @click-left="handleBack" />
       <div class="top-deco"></div>
       <component class="content" :is="role" ref="subView" :refreshing="refreshing" />
       <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
@@ -10,12 +10,14 @@
 </template>
 
 <script>
+import TheHeaderSub from '@/components/TheHeaderSub.vue';
 import merchant from './sub/merchant.vue'
 import recommender from './sub/recommender.vue'
 import user from './sub/user.vue'
 
 export default {
   components: {
+    TheHeaderSub,
     user,
     merchant,
     recommender,
@@ -45,7 +47,9 @@ export default {
     },
 
     handleBack() {
-      this.MyGo(-1);
+      // this.MyGo(-1);
+      this.$router.isBack = true;
+      this.$router.replace('/');
     },
   },
 };

@@ -2,10 +2,13 @@
   <div class="header-common">
     <van-nav-bar
       :title="title"
-      :left-arrow="leftArrow"
+      left-arrow
       :border="false"
       @click-left="$emit('click-left')"
     >
+      <template #left>
+        <span class="swift-role">{{ $t('home.switchRole') }}</span>
+      </template>
       <template #right>
         <img
           class="icon icon-lang"
@@ -19,6 +22,7 @@
 </template>
 
 <script>
+// import TheHeaderPC from '@/components/TheHeaderPC.vue';
 
 export default {
   name: '',
@@ -30,10 +34,6 @@ export default {
       type: String,
       default: ''
     },
-    leftArrow: {
-      type: Boolean,
-      default: true,
-    }
   },
   computed: {
     imgUrlLang() {
@@ -55,5 +55,16 @@ export default {
 .header-common .icon {
   width: 44px;
   height: 44px;
+}
+.swift-role {
+  width: 128px;
+  height: 55px;
+  line-height: 55px;
+  text-align: center;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 500;
 }
 </style>
