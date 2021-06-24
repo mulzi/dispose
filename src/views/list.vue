@@ -1,13 +1,23 @@
 <template>
   <div class="role-wrapper">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <TheHeader :title="$t('home.userList')" @click-left="handleBack" />
+      <TheHeader :title="title" @click-left="handleBack" />
       <div class="top-deco"></div>
       <div class="content content-table">
-        <div class="tr tr-head">
+        <div class="tr tr-head" v-if="type === 'user'">
           <div class="td no">{{ $t('home.no') }}</div>
           <div class="td address">{{ $t('home.userAddress') }}</div>
           <div class="td amount">{{ $t('home.userDisposeAmount') }}</div>
+        </div>
+        <div class="tr tr-head" v-if="type === 'recommender'">
+          <div class="td no">{{ $t('home.no') }}</div>
+          <div class="td address">{{ $t('home.recommenderAddress') }}</div>
+          <div class="td amount">{{ $t('home.recommenderAmount') }}</div>
+        </div>
+        <div class="tr tr-head" v-if="type === 'cooperator'">
+          <div class="td no">{{ $t('home.no') }}</div>
+          <div class="td address">{{ $t('home.merchantAddress') }}</div>
+          <div class="td amount">{{ $t('home.recommenderAmount') }}</div>
         </div>
         <div class="empty-wrap" v-if="!list.length">
           <img class="img-empty" src="../assets/img/box-empty.png" alt="" />
@@ -39,6 +49,8 @@ export default {
   },
   data() {
     return {
+      title: 'ooo',
+      type: 'user',
       refreshing: false,
       listLoading: false,
       listFinished: true,
@@ -63,8 +75,19 @@ export default {
   },
   methods: {
     watchAddress() {
-      this.$toast.loading();
-      this.onRefresh();
+      if (this.$route.query.role === 'user') {
+        this.type = 'user';
+        this.title = this.$t('home.userList');
+      } else if (this.$route.query.role === 'recommender') {
+        this.type = 'recommender';
+        this.title = this.$t('home.recommenderList');
+      } else if (this.$route.query.role === 'cooperator') {
+        this.type = 'cooperator';
+        this.title = this.$t('home.merchantList');
+      } else {
+        this.MyGo(-1);
+      }
+      // this.onRefresh();
     },
 
     addressChange(addr) {
