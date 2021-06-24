@@ -108,8 +108,7 @@ export default {
         list: [],
         loading: false,
         finished: false,
-        // time: Math.floor(new Date(2021,6,12).getTime() / 1000)
-        time: Math.floor((Date.now() - 86400000 * 190) / 1000)
+        time: Math.floor(new Date(2021,5,12).getTime() / 1000)
       },
     };
   },
@@ -258,7 +257,7 @@ export default {
 
     handleTab(tb) {
       this.actTab = tb;
-      if (this[this.actTab].list.length === 0) {
+      if (this[tb].list.length === 0) {
         this.onLoad();
       }
     },
