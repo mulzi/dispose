@@ -17,7 +17,7 @@ export default {
           console.warn('no time');
           return;
         }
-        const args = binding.value['params'];
+        const args = binding.value['params'] || [];
         setTimeout(() => {
           isWaiting = false;
         }, time || 350);
