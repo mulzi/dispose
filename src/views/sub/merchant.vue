@@ -260,6 +260,7 @@ export default {
   background: url('../../assets/img/copy-add.png') no-repeat;
   background-size: 100% 100%;
   margin-left: 12px;
+  opacity: 0.3;
 }
 
 .btns-wrap {

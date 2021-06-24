@@ -24,7 +24,7 @@
       <div class="journal-list">
         <div class="journal-title">
           <span>{{ $t('home.recommendLog') }}</span>
-          <span class="tip">{{ $t('home.recommendLogTip') }}</span>
+          <span class="tip" @click="handleToList('cooperators')">{{ $t('home.recommendLogTip') }}</span>
         </div>
         <van-list
           v-model="listLoading"
@@ -55,7 +55,6 @@ export default {
   },
   data() {
     return {
-      totalValue: 80000,
       inputAddress: '',
       recommenderInfo: {
         amount: 80000
@@ -96,6 +95,8 @@ export default {
                 address
                 token
                 amount
+                userCount
+                users
               }
             }`,
           variables: {
@@ -107,7 +108,7 @@ export default {
         if (mid) {
           this.onRefresh();
         }
-        console.log('merchant', this.recommenderInfo);
+        console.log('recommender info', this.recommenderInfo);
       } catch (error) {
         console.log(error);
       }
@@ -176,6 +177,10 @@ export default {
       return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 10);
     },
 
+    handleToList() {
+      this.$router.push({ path: '/list', query: { role: 'cooperator' }});
+    },
+
     copyCallback: debounce(function() {
       this.$toast.success(this.$t('message.addressCopied'));
     }, 350),
@@ -219,6 +224,7 @@ export default {
   background: url('../../assets/img/copy-add.png') no-repeat;
   background-size: 100% 100%;
   margin-left: 12px;
+  opacity: 0.3;
 }
 
 .input-panel {
