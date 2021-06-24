@@ -9,15 +9,15 @@
           <div class="td address">{{ $t('home.userAddress') }}</div>
           <div class="td amount">{{ $t('home.userDisposeAmount') }}</div>
         </div>
-        <div class="tr tr-head" v-if="type === 'recommender'">
+        <div class="tr tr-head" v-if="type === 'referrer'">
           <div class="td no">{{ $t('home.no') }}</div>
-          <div class="td address">{{ $t('home.recommenderAddress') }}</div>
-          <div class="td amount">{{ $t('home.recommenderAmount') }}</div>
+          <div class="td address">{{ $t('home.referrerAddress') }}</div>
+          <div class="td amount">{{ $t('home.referrerAmount') }}</div>
         </div>
-        <div class="tr tr-head" v-if="type === 'cooperator'">
+        <div class="tr tr-head" v-if="type === 'merchant'">
           <div class="td no">{{ $t('home.no') }}</div>
           <div class="td address">{{ $t('home.merchantAddress') }}</div>
-          <div class="td amount">{{ $t('home.recommenderAmount') }}</div>
+          <div class="td amount">{{ $t('home.referrerAmount') }}</div>
         </div>
         <div class="empty-wrap" v-if="!list.length">
           <img class="img-empty" src="../assets/img/box-empty.png" alt="" />
@@ -28,9 +28,9 @@
           :finished-text="dataText"
           @load="onLoad"
         >
-          <div class="tr" v-for="(item, index) in list" :key="index">
+          <div class="tr" v-for="(item, index) in list" :key="index" @click="handleToDetail(item)">
             <div class="td no">{{ index + 1 }}</div>
-            <div class="td address">{{ addressChange(item.address) }}</div>
+            <div class="td address">{{ addressChange(item.userAddress || item.midAddress || item.sellerAddress) }}</div>
             <div class="td amount">{{ fromWei(item.amount) }} DST</div>
           </div>
         </van-list>
@@ -43,12 +43,14 @@
 <script>
 import gql from 'graphql-tag';
 import { debounce } from '@/tool/utils';
+import { tsrAddress } from '@/api/contract';
 
 export default {
   components: {
   },
   data() {
     return {
+      from: '',
       title: 'ooo',
       type: 'user',
       refreshing: false,
@@ -75,15 +77,19 @@ export default {
   },
   methods: {
     watchAddress() {
+      this.from = this.$route.query.from;
       if (this.$route.query.role === 'user') {
         this.type = 'user';
         this.title = this.$t('home.userList');
-      } else if (this.$route.query.role === 'recommender') {
-        this.type = 'recommender';
-        this.title = this.$t('home.recommenderList');
-      } else if (this.$route.query.role === 'cooperator') {
-        this.type = 'cooperator';
+        this.queryUser(this.from);
+      } else if (this.$route.query.role === 'referrer') {
+        this.type = 'referrer';
+        this.title = this.$t('home.referrerList');
+        this.queryReferrer(this.from);
+      } else if (this.$route.query.role === 'merchant') {
+        this.type = 'merchant';
         this.title = this.$t('home.merchantList');
+        this.queryMerchant(this.from);
       } else {
         this.MyGo(-1);
       }
@@ -94,88 +100,35 @@ export default {
       return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 10);
     },
 
-    queryUser() {
-      return this.$apollo.query({
-        query: gql`query ($to: Bytes!,$token: Bytes!) {
-          logs(where: { to: $to, token: $token }) {
-              id
-              address
-              token
-              amount
-            }
-          }`,
-        variables: {
-          to: this.$store.state.address,
-          token: this.$store.state.token,
-        }
-      })
-    },
-
-    queryRecommender() {
-      return this.$apollo.query({
-        query: gql`query ($address: Bytes!, $first: Int!, $skip: Int!) {
-          mids(where: { address: $address }, first: $first, skip: $skip) {
-              id
-              address
-              token
-              amount
-              userCount
-            }
-          }`,
-        variables: {
-          first: this.pageSize,
-          skip: this.pageNo * this.pageSize,
-          address: this.$store.state.address
-        }
-      })
-    },
-
-    queryMerchant() {
-      return this.$apollo.query({
-        query: gql`query ($address: Bytes!, $first: Int!, $skip: Int!) {
-          sellers(where: { address: $address }, first: $first, skip: $skip) {
-              id
-              address
-              token
-              amount
-              userCount
-              midCount
-            }
-          }`,
-        variables: {
-          first: this.pageSize,
-          skip: this.pageNo * this.pageSize,
-          address: this.$store.state.address
-        }
-      })
-    },
-
-    getFunc() {
-      switch (this.$route.query.role) {
-        case 'user':
-          return this.queryUser();
-        case 'recommender':
-          return this.queryRecommender();
-        case 'merchant':
-          return this.queryMerchant();
-      }
-    },
-
-    async reqUserList() {
-      console.log('req list data')
-      this.pageNo = Math.ceil(this.list.length / this.pageSize);
+    async queryUser(from) {
+      const pageNo = Math.ceil(this.list.length / this.pageSize);
       try {
-        const { data } = await this.getFunc()
-        if (data.users) {
-          this.list.push(...data.users);
-        } else if (data.mids) {
-          this.list.push(...data.mids);
-        } else if (data.sellers) {
-          this.list.push(...data.sellers);
-        }
-        console.log('list', this.list);
+        const { data: { seller: { sellerUser } } } = await this.$apollo.query({
+          query: gql`query ($id: ID!, $first: Int!, $skip: Int!) {
+            seller(id: $id) {
+                id
+                address
+                token
+                amount
+                sellerUser(first: $first, skip: $skip){
+                  id
+                  userAddress
+                  amount
+                }
+              }
+            }`,
+          fetchPolicy: "no-cache",
+          variables: {
+            id: tsrAddress + from,
+            first: this.pageSize,
+            skip: pageNo * this.pageSize,
+          }
+        })
+
+        this.list = sellerUser;
+        console.log('users', sellerUser);
       } catch (error) {
-        console.log(error);
+        console.warn(error);
       }
 
       this.$toast.clear();
@@ -183,20 +136,114 @@ export default {
       this.listLoading = false;
 
       // 数据全部加载完成
-      if (this.list.length < (this.pageNo + 1) * this.pageSize) {
+      if (this.list.length < (pageNo + 1) * this.pageSize) {
         this.listFinished = true;
+      }
+    },
+
+    async queryReferrer(from) {
+      const pageNo = Math.ceil(this.list.length / this.pageSize);
+      try {
+        const { data: { seller: { midSeller } } } = await this.$apollo.query({
+          query: gql`query ($id: ID!, $first: Int!, $skip: Int!) {
+            seller(id: $id) {
+                id
+                address
+                token
+                amount
+                midSeller(first: $first, skip: $skip){
+                  id
+                  midAddress
+                  amount
+                }
+              }
+            }`,
+          fetchPolicy: "no-cache",
+          variables: {
+            id: tsrAddress + from,
+            first: this.pageSize,
+            skip: pageNo * this.pageSize,
+          }
+        })
+
+        this.list = midSeller;
+        console.log('mids', midSeller);
+      } catch (error) {
+        console.warn(error);
+      }
+
+      this.$toast.clear();
+      // 加载状态结束
+      this.listLoading = false;
+
+      // 数据全部加载完成
+      if (this.list.length < (pageNo + 1) * this.pageSize) {
+        this.listFinished = true;
+      }
+    },
+
+    async queryMerchant(from) {
+      const pageNo = Math.ceil(this.list.length / this.pageSize);
+      try {
+        const { data: { mid: { midSeller } } } = await this.$apollo.query({
+          query: gql`query ($id: ID!, $first: Int!, $skip: Int!) {
+            mid(id: $id) {
+                id
+                address
+                token
+                amount
+                midSeller(first: $first, skip: $skip){
+                  id
+                  sellerAddress
+                  amount
+                }
+              }
+            }`,
+          fetchPolicy: "no-cache",
+          variables: {
+            id: tsrAddress + from,
+            first: this.pageSize,
+            skip: pageNo * this.pageSize,
+          }
+        })
+
+        this.list = midSeller;
+        console.log('midSeller', midSeller)
+      } catch (error) {
+        console.warn(error);
+      }
+
+      this.$toast.clear();
+      // 加载状态结束
+      this.listLoading = false;
+
+      // 数据全部加载完成
+      if (this.list.length < (pageNo + 1) * this.pageSize) {
+        this.listFinished = true;
+      }
+    },
+
+    reqList() {
+      if (this.$route.query.role === 'user') {
+        this.queryUser(this.from);
+      } else if (this.$route.query.role === 'referrer') {
+        this.queryreferrer(this.from);
+      } else if (this.$route.query.role === 'cooperator') {
+        this.queryMerchant(this.from);
       }
     },
 
     onRefresh() {
       if (!this.$store.state.address) return;
+
+      if (this.refreshing) {
+        this.refreshing = false;
+      }
       // 清空列表数据
       this.listFinished = false;
       this.list = [];
 
-      // 将 loading 设置为 true，表示处于加载状态
-      this.listLoading = true;
-      this.reqUserList()
+      this.onLoad();
     },
 
     onLoad() {
@@ -204,7 +251,20 @@ export default {
 
       // 将 loading 设置为 true，表示处于加载状态
       this.listLoading = true;
-      this.reqUserList();
+      this.reqList();
+    },
+
+    handleToDetail(item) {
+      let query = {};
+      if (this.type === 'user') {
+        query = { user: item.userAddress, amount: item.amount };
+      } else if (this.type === 'referrer') {
+        query = { referrer: item.midAddress, amount: item.amount };
+      } else if (this.type === 'merchant') {
+        query = { merchant: item.sellerAddress, amount: item.amount };
+      }
+
+      this.$router.push({ path: '/details', query });
     },
 
     handleBack() {

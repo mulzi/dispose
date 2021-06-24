@@ -14,19 +14,19 @@ const routes = [
     path: '/sub', // 角色
     name: 'Sub',
     component: () =>
-      import(/* webpackChunkName: "guide" */ '@/views/sub.vue'),
+      import(/* webpackChunkName: "sub" */ '@/views/sub.vue'),
   },
   {
     path: '/list', // 用户列表
     name: 'List',
     component: () =>
-      import(/* webpackChunkName: "guide" */ '@/views/list.vue'),
+      import(/* webpackChunkName: "list" */ '@/views/list.vue'),
   },
   {
     path: '/details', // 明细
     name: 'Details',
     component: () =>
-      import(/* webpackChunkName: "guide" */ '@/views/details.vue'),
+      import(/* webpackChunkName: "list" */ '@/views/details.vue'),
   },
   {
     path: '*',

@@ -1,5 +1,5 @@
 <template>
-  <div class="recommender-wrap">
+  <div class="user-wrap">
     <div class="title">{{ $t('home.userSub') }}</div>
       <div class="c-panel total-panel">
         <div class="top">
@@ -14,13 +14,14 @@
           </p>
         </Copy>
       </div>
-      <div class="c-panel input-panel">
+      <div class="c-panel input-panel" v-if="isShowDispose">
         <div class="input-title">{{ $t('home.disposeToken') }}</div>
         <div class="input-wrap">
           <span class="input">{{ disposeToken }}</span>
         </div>
         <div class="input-title dispose-title">{{ $t('home.disposeNumber') }}</div>
         <div class="input-wrap">
+          <!-- v-focus -->
           <input
             class="input"
             type="number"
@@ -61,6 +62,10 @@ export default {
   },
   data() {
     return {
+      timer: null,
+      isShowDispose: false,
+      merchant: '',
+      referrer: '',
       listLoading: false,
       listFinished: true,
       tsrBalance: 0,
@@ -94,10 +99,24 @@ export default {
       }
     }
   },
+  beforeDestroy() {
+    clearTimeout(this.timer);
+    this.timer = null;
+  },
   methods: {
     watchAddress() {
       this.reqUserInfo();
       this.reqUserBalance();
+      if (this.$route.query.merchant) {
+        this.isShowDispose = true;
+        this.merchant = this.$route.query.merchant;
+      }
+
+      if (this.$route.query.referrer) {
+        this.referrer = this.$route.query.referrer;
+      }
+
+      this.checkPending(['dispose']);
     },
 
     async reqUserBalance() {
@@ -131,7 +150,6 @@ export default {
         if (user) {
           this.onRefresh();
         }
-        console.log('merchant', this.userInfo);
       } catch (error) {
         console.log(error);
       }
@@ -139,11 +157,11 @@ export default {
 
     async reqDisposeList() {
       console.log('token', this.userInfo.token)
-      this.pageNo = Math.ceil(this.list.length / this.pageSize);
+      const pageNo = Math.ceil(this.list.length / this.pageSize);
       try {
         const { data: { logs } } = await this.$apollo.query({
           query: gql`query ($from: Bytes!, $token: Bytes!, $first: Int!, $skip: Int!) {
-            logs(where: { from: $from, token: $token }, first: $first, skip: $skip) {
+            logs(where: { from: $from, token: $token }, first: $first, skip: $skip, orderBy: timestamp, orderDirection: desc) {
                 id
                 from
                 to
@@ -153,9 +171,10 @@ export default {
                 timestamp
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
             first: this.pageSize,
-            skip: this.pageNo * this.pageSize,
+            skip: pageNo * this.pageSize,
             token: this.userInfo.token,
             from: this.userInfo.address
           }
@@ -171,18 +190,17 @@ export default {
       this.listLoading = false;
 
       // 数据全部加载完成
-      this.listFinished = this.list.length < (this.pageNo + 1) * this.pageSize;
+      this.listFinished = this.list.length < (pageNo + 1) * this.pageSize;
     },
 
     onRefresh() {
       if (!this.$store.state.address) return;
+
       // 清空列表数据
       this.listFinished = false;
       this.list = [];
 
-      // 将 loading 设置为 true，表示处于加载状态
-      this.listLoading = true;
-      this.reqDisposeList();
+      this.onLoad();
     },
 
     onLoad() {
@@ -195,16 +213,23 @@ export default {
 
     // 执行销毁
     async handleDispose() {
-      const extraData = disposeAddress;
+      if (!this.merchant) return;
+      this.$toast.loading({
+        duration: 0,
+        forbidClick: true,
+        message: this.$t('message.handling')
+      })
+      const extraData = this.merchant + (this.referrer ? this.referrer.slice(2) : '0000000000000000000000000000000000000000');
+      console.log('extraData', extraData);
       let txHash = '';
       this.$tsrContract.methods
-        .approveAndCall(disposeAddress, this.$web3.utils.toWei(this.inputValue), extraData)
+        .approveAndCall(disposeAddress, this.inputValue * 1e5, extraData)
         .send({
           from: this.$store.state.address
         })
         .on('transactionHash', (hash) => {
           txHash = hash;
-          this.reqHashState(txHash, 'dispose');
+          this.startCheckState(txHash, 'dispose');
         })
         .on('receipt', (receipt) => {
           this.removeByTxHash(txHash);
@@ -223,6 +248,10 @@ export default {
       this.addIng = false;
       this.$toast.clear();
       this.$toast.success(this.$t('message.handleOK'));
+
+      this.timer = setTimeout(() => {
+        this.onRefresh();
+      }, 5000);
     },
 
     onSendFail(error, type) {

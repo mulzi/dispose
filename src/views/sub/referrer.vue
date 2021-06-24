@@ -1,11 +1,11 @@
 <template>
-  <div class="recommender-wrap">
-    <div class="title">{{ $t('home.recommenderSub') }}</div>
+  <div class="referrer-wrap">
+    <div class="title">{{ $t('home.referrerSub') }}</div>
       <div class="c-panel total-panel">
         <div class="top">
           <div class="asset-wrap">
             <div class="tit">{{ $t('home.recommendTotal') }}</div>
-            <div class="asset-value">{{ toFixedFloor((recommenderInfo.amount || 0) / 1e18, 4) }}</div>
+            <div class="asset-value">{{ toFixedFloor((referrerInfo.amount || 0) / 1e18, 4) }}</div>
           </div>
         </div>
         <Copy :content="$store.state.address" @copyCallback="copyCallback">
@@ -17,14 +17,16 @@
       <div class="c-panel input-panel">
         <div class="input-title">{{ $t('home.inputMerchantAddress') }}</div>
         <div class="input-wrap">
-          <input class="input" type="text" v-model="inputAddress" placeholder="商户地址" />
+          <input class="input" type="text" v-model="inputAddress" placeholder="0x address" />
         </div>
         <div class="btn btn-dark" @click="handleGenerate">{{ $t('home.generateQr') }}</div>
       </div>
       <div class="journal-list">
         <div class="journal-title">
           <span>{{ $t('home.recommendLog') }}</span>
-          <span class="tip" @click="handleToList('cooperators')">{{ $t('home.recommendLogTip') }}</span>
+          <span class="tip" @click="handleToList('cooperators')">
+            {{ ((referrerInfo.midSeller || {}).length || 0) + $t('home.recommendLogTip') }}
+          </span>
         </div>
         <van-list
           v-model="listLoading"
@@ -33,7 +35,7 @@
           @load="onLoad"
         >
           <TheLogEmpty v-if="!list.length" />
-          <TheLogItem :item="item" :type="'recommender'" v-for="(item, index) in list" :key="index" />
+          <TheLogItem :item="item" :type="'referrer'" v-for="(item, index) in list" :key="index" />
         </van-list>
       </div>
       <DialogDisposeQrCode ref="dialogQR" />
@@ -56,7 +58,7 @@ export default {
   data() {
     return {
       inputAddress: '',
-      recommenderInfo: {
+      referrerInfo: {
         amount: 80000
       },
       listLoading: false,
@@ -75,7 +77,7 @@ export default {
   },
   methods: {
     watchAddress() {
-      this.reqRecommenderInfo();
+      this.reqReferrerInfo();
     },
 
     handleGenerate() {
@@ -83,10 +85,11 @@ export default {
         return this.$toast.fail(this.$t('message.invalidAddress'));
       }
 
-      this.$refs.dialogQR.show(this.inputAddress);
+      const url = window.location.origin + '/sub?role=user' + `&merchant=${this.inputAddress}&referrer=${this.address}`;
+      this.$refs.dialogQR.show(url);
     },
 
-    async reqRecommenderInfo() {
+    async reqReferrerInfo() {
       try {
         const { data: { mid } } = await this.$apollo.query({
           query: gql`query ($id: ID!) {
@@ -95,8 +98,8 @@ export default {
                 address
                 token
                 amount
-                userCount
-                users
+                midUser
+                midSeller
               }
             }`,
           variables: {
@@ -104,22 +107,22 @@ export default {
           }
         })
 
-        this.recommenderInfo = mid || {};
+        this.referrerInfo = mid || {};
         if (mid) {
           this.onRefresh();
         }
-        console.log('recommender info', this.recommenderInfo);
+        console.log('referrer info', this.referrerInfo);
       } catch (error) {
         console.log(error);
       }
     },
     
     async reqRecommendList() {
-      this.pageNo = Math.ceil(this.list.length / this.pageSize);
+      const pageNo = Math.ceil(this.list.length / this.pageSize);
       try {
         const { data: { logs } } = await this.$apollo.query({
           query: gql`query ($mid: Bytes!,$token: Bytes!, $first: Int!, $skip: Int!) {
-            logs(where: { mid: $mid, token: $token }, first: $first, skip: $skip) {
+            logs(where: { mid: $mid, token: $token }, first: $first, skip: $skip, orderBy: timestamp, orderDirection: desc) {
                 id
                 from
                 to
@@ -129,11 +132,12 @@ export default {
                 timestamp
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
             first: this.pageSize,
-            skip: this.pageNo * this.pageSize,
-            token: this.recommenderInfo.token,
-            mid: this.recommenderInfo.address
+            skip: pageNo * this.pageSize,
+            token: this.referrerInfo.token,
+            mid: this.referrerInfo.address
           }
         })
 
@@ -147,7 +151,7 @@ export default {
       this.listLoading = false;
 
       // 数据全部加载完成
-      if (this.list.length < (this.pageNo + 1) * this.pageSize) {
+      if (this.list.length < (pageNo + 1) * this.pageSize) {
         this.listFinished = true;
       }
     },
@@ -158,9 +162,7 @@ export default {
       this.listFinished = false;
       this.list = [];
 
-      // 将 loading 设置为 true，表示处于加载状态
-      this.listLoading = true;
-      this.reqRecommendList();
+      this.onLoad();
     },
 
     onLoad() {
@@ -178,7 +180,7 @@ export default {
     },
 
     handleToList() {
-      this.$router.push({ path: '/list', query: { role: 'cooperator' }});
+      this.$router.push({ path: '/list', query: { role: 'merchant', from: this.address }});
     },
 
     copyCallback: debounce(function() {

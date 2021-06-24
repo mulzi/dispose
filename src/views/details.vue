@@ -3,20 +3,30 @@
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <TheHeader :title="title" @click-left="handleBack" />
       <div class="top-deco"></div>
-      <div class="content content-table">
+      <div class="content">
         <div class="tabs tabs-wrap">
           <div class="tab week" :class="{ active: actTab === 'wk' }" @click="handleTab('wk')">{{ $t('home.week') }}</div>
           <div class="tab mounth" :class="{ active: actTab === 'm1' }" @click="handleTab('m1')">{{ $t('home.mounth1') }}</div>
           <div class="tab mounth-3" :class="{ active: actTab === 'm3' }" @click="handleTab('m3')">{{ $t('home.mounth3') }}</div>
           <div class="tab all" :class="{ active: actTab === 'all' }" @click="handleTab('all')">{{ $t('home.all') }}</div>
         </div>
+        <div class="total-wrap">
+          <div class="tsr row" v-if="type === 'user'">
+            <span class="tit">{{ $t('home.amount') }}</span>
+            <span class="val">-{{ fromWei($route.query.amount || '0') }} TSR</span>
+          </div>
+          <div class="dst row">
+            <span class="tit">{{ $t('home.total') }}</span>
+            <span class="val">{{ fromWei($route.query.amount || '0') }} DST</span>
+          </div>
+      </div>
         <div class="tab-content">
           <div class="tab-panel" v-show="actTab === 'wk'">
             <van-list
               v-model="wk.loading"
               :finished="wk.finished"
-              :finished-text="wkFiText"
-              :immediate-check="false"
+              :finished-text="finiText()"
+              :immediate-check="true"
               @load="onLoad"
             >
               <TheLogEmpty v-if="!wk.list.length" />
@@ -27,8 +37,8 @@
             <van-list
               v-model="m1.loading"
               :finished="m1.finished"
-              :finished-text="m1FiText"
-              :immediate-check="false"
+              :finished-text="finiText()"
+              :immediate-check="true"
               @load="onLoad"
             >
               <TheLogEmpty v-if="!m1.list.length" />
@@ -39,8 +49,8 @@
             <van-list
               v-model="m3.loading"
               :finished="m3.finished"
-              :finished-text="m3FiText"
-              :immediate-check="false"
+              :finished-text="finiText()"
+              :immediate-check="true"
               @load="onLoad"
             >
               <TheLogEmpty v-if="!m3.list.length" />
@@ -51,8 +61,8 @@
             <van-list
               v-model="all.loading"
               :finished="all.finished"
-              :finished-text="allFiText"
-              :immediate-check="false"
+              :finished-text="finiText()"
+              :immediate-check="true"
               @load="onLoad"
             >
               <TheLogEmpty v-if="!all.list.length" />
@@ -61,7 +71,8 @@
           </div>
         </div>
       </div>
-      <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
+
+      <!-- <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div> -->
     </van-pull-refresh>
   </div>
 </template>
@@ -86,6 +97,7 @@ export default {
       actTab: 'wk',
       pageSize: 20,
       totalResults: 0,
+      curAddress: '',
       wk: {
         list: [],
         loading: false,
@@ -116,44 +128,32 @@ export default {
     role() {
       return this.$route.query.role
     },
-    allFiText() {
-      return this.all.list.length > 0
-        ? this.$t('message.noMore')
-        : this.$t('message.noData');
-    },
-    wkFiText() {
-      return this.wk.list.length > 0
-        ? this.$t('message.noMore')
-        : this.$t('message.noData');
-    },
-    m1FiText() {
-      return this.m1.list.length > 0
-        ? this.$t('message.noMore')
-        : this.$t('message.noData');
-    },
-    m3FiText() {
-      return this.m3.list.length > 0
-        ? this.$t('message.noMore')
-        : this.$t('message.noData');
-    },
   },
   methods: {
+    finiText() {
+      return this[this.actTab].list.length > 0
+        ? this.$t('message.noMore')
+        : this.$t('message.noData');
+    },
     watchAddress() {
       if (this.$route.query.user) {
         this.type = 'user';
         this.title = this.$t('home.user') + this.addressShort(this.$route.query.user) + this.$t('home.disposeDetail');
-        this.reqUserInfo(this.$route.query.user);
-      } else if (this.$route.query.recommender) {
-        this.type = 'recommender';
-        this.title = this.$t('home.recommender') + this.addressShort(this.$route.query.recommender) + this.$t('home.recommendDetail');
-        this.reqUserInfo(this.$route.query.recommender);
+        this.curAddress = this.$route.query.user;
+      } else if (this.$route.query.referrer) {
+        this.type = 'referrer';
+        this.title = this.$t('home.referrer') + this.addressShort(this.$route.query.referrer) + this.$t('home.recommendDetail');
+        this.curAddress = this.$route.query.referrer;
       } else if (this.$route.query.merchant) {
         this.type = 'merchant';
         this.title = this.$t('home.merchant') + this.addressShort(this.$route.query.merchant) + this.$t('home.recommendDetail');
-        this.reqUserInfo(this.$route.query.merchant);
+        this.curAddress = this.$route.query.merchant;
       } else {
         this.MyGo(-1);
       }
+
+      this.list = [];
+      this.onLoad();
     },
 
     addressShort(addr) {
@@ -164,42 +164,16 @@ export default {
       return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 10);
     },
 
-    async reqUserInfo(address) {
-      try {
-        const { data: { user } } = await this.$apollo.query({
-          query: gql`query ($id: ID!) {
-            user(id: $id) {
-                id
-                address
-                token
-                amount
-              }
-            }`,
-          variables: {
-            id: tsrAddress + address.toLowerCase()
-          }
-        })
-
-        this.userInfo = user;
-        console.log('userinfo', this.userInfo, tsrAddress + address);
-        if (user) {
-          this.list = [];
-          this.onLoad();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    
-    async reqLogList() {
+    // 商家用户
+    async reqMerchantUserList() {
       const actTab = this.actTab;
-      console.log('token', this.userInfo.token, this[actTab].time)
+      console.log('token', this[actTab].time)
       const pageNo = Math.ceil(this[actTab].list.length / this.pageSize);
 
       try {
         const { data: { logs } } = await this.$apollo.query({
-          query: gql`query ($from: Bytes!, $token: Bytes!, $time: Int!, $first: Int!, $skip: Int!) {
-            logs(where: { from: $from, token: $token, timestamp_gte: $time }, first: $first, skip: $skip) {
+          query: gql`query ($from: Bytes!, $to: Bytes!, $token: Bytes!, $time: Int!, $first: Int!, $skip: Int!) {
+            logs(where: { from: $from, to: $to, token: $token, timestamp_gte: $time }, first: $first, skip: $skip, orderBy: timestamp, orderDirection: desc) {
                 id
                 from
                 to
@@ -209,11 +183,13 @@ export default {
                 timestamp
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
             first: this.pageSize,
             skip: pageNo * this.pageSize,
-            token: this.userInfo.token,
-            from: this.userInfo.address,
+            token: tsrAddress,
+            from: this.curAddress,
+            to: this.address,
             time: Math.floor(this[actTab].time)
           }
         })
@@ -232,6 +208,61 @@ export default {
         this[this.actTab].finished = true;
       }
       this[this.actTab].finished = true;
+    },
+
+    // 商家的推荐人 or 推荐人的合作商家
+    async reqMerchantReferrerList() {
+      const actTab = this.actTab;
+      const pageNo = Math.ceil(this[actTab].list.length / this.pageSize);
+
+      try {
+        const { data: { logs } } = await this.$apollo.query({
+          query: gql`query ($mid: Bytes!, $to: Bytes!, $token: Bytes!, $time: Int!, $first: Int!, $skip: Int!) {
+            logs(where: { mid: $mid, to: $to, token: $token, timestamp_gte: $time }, first: $first, skip: $skip, orderBy: timestamp, orderDirection: desc) {
+                id
+                from
+                to
+                mid
+                token
+                amount
+                timestamp
+              }
+            }`,
+          fetchPolicy: "no-cache",
+          variables: {
+            first: this.pageSize,
+            skip: pageNo * this.pageSize,
+            token: tsrAddress,
+            mid: this.curAddress,
+            to: this.address,
+            time: Math.floor(this[actTab].time)
+          }
+        })
+
+        this[actTab].list.push(...logs);
+        console.log('dispose list', this[actTab].list);
+      } catch (error) {
+        console.log(error);
+      }
+
+      // 加载状态结束
+      this[actTab].loading = false;
+
+      // 数据全部加载完成
+      if (this[actTab].list.length < (pageNo + 1) * this.pageSize) {
+        this[this.actTab].finished = true;
+      }
+      this[this.actTab].finished = true;
+    },
+    
+    async reqLogList() {
+      if (this.$route.query.user) {
+        this.reqMerchantUserList();
+      } else if (this.$route.query.referrer) {
+        this.reqMerchantReferrerList();
+      } else if (this.$route.query.merchant) {
+        this.reqMerchantReferrerList();
+      }
     },
 
     onRefresh() {
@@ -277,7 +308,7 @@ export default {
 .top-deco {
   position: absolute;
   width: 100%;
-  height: 100px;
+  height: 80px;
   background: #ffa600;
   border-radius: 0px 0px 60px 60px;
   z-index: 0;
@@ -339,6 +370,29 @@ export default {
   margin-right: auto;
 }
 
+.total-wrap {
+  position: sticky;
+  bottom: 0;
+  width: 670px;
+  margin: 30px auto;
+  background: #FFFFFF;
+  border-radius: 20px;
+  font-size: 36px;
+  padding: 30px 56px;
+  box-sizing: border-box;
+}
+.total-wrap .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 80px;
+}
+.total-wrap .row .val {
+  color: #a65200;
+}
+.total-wrap .dst {
+  margin-top: auto;
+}
 .coop-mail {
   font-size: 24px;
   font-weight: 500;

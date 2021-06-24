@@ -2,13 +2,13 @@
   <div class="the-log-item">
     <div class="head">
       <span class="date">{{ formatTime(item.timestamp * 1000) }}</span>
-      <span class="value" v-if="type == 'user'">-{{ toFixedFloor((item.amount || 0) / 1e18) }}(DST)</span>
-      <span class="value" v-if="type == 'merchant' || type == 'recommender'">+{{ toFixedFloor((item.amount || 0) / 1e18) }}(DST)</span>
+      <span class="value" v-if="type == 'user'">-{{ toFixedFloor((item.amount || 0) / 1e18) }}(TSR)</span>
+      <span class="value" v-if="type == 'merchant' || type == 'referrer'">+{{ toFixedFloor((item.amount || 0) / 1e18) }}(DST)</span>
     </div>
     <div class="addr" v-if="type == 'user'">From: {{ item.from }}</div>
     <div class="addr" v-if="type == 'merchant'">Referrer: {{ item.mid }}</div>
-    <div class="addr" v-if="type == 'recommender'">User: {{ item.from }}</div>
-    <div class="addr" v-if="type == 'recommender'">To: {{ item.to }}</div>
+    <div class="addr" v-if="type == 'referrer'">User: {{ item.from }}</div>
+    <div class="addr" v-if="type == 'referrer'">To: {{ item.to }}</div>
   </div>
 </template>
 <script>

@@ -8,9 +8,9 @@
         <img class="img" src="../assets/img/index/icon-merchant.png" alt="">
         <span class="role">{{ $t('home.merchant') }}</span>
       </div>
-      <div class="opt-item recommender" @click="handleRole('recommender')">
+      <div class="opt-item referrer" @click="handleRole('referrer')">
         <img class="img" src="../assets/img/index/icon-merchant.png" alt="">
-        <span class="role">{{ $t('home.recommender') }}</span>
+        <span class="role">{{ $t('home.referrer') }}</span>
       </div>
       <div class="opt-item user" @click="handleRole('user')">
         <img class="img" src="../assets/img/index/icon-merchant.png" alt="">

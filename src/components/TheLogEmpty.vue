@@ -19,7 +19,7 @@ export default {
 </script>
 <style scoped>
 .empty-wrap {
-  margin-top: 50px;
+  padding-top: 50px;
   text-align: center;
 }
 .empty-wrap .img-empty {

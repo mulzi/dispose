@@ -12,7 +12,7 @@
 <script>
 import TheHeaderSub from '@/components/TheHeaderSub.vue';
 import merchant from './sub/merchant.vue'
-import recommender from './sub/recommender.vue'
+import referrer from './sub/referrer.vue'
 import user from './sub/user.vue'
 
 export default {
@@ -20,7 +20,7 @@ export default {
     TheHeaderSub,
     user,
     merchant,
-    recommender,
+    referrer,
   },
   data() {
     return {
@@ -32,10 +32,6 @@ export default {
     role() {
       return this.$route.query.role
     }
-  },
-  created() {
-  },
-  mounted() {
   },
   methods: {
     // 下拉刷新

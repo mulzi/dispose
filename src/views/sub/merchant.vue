@@ -21,8 +21,12 @@
         </Copy>
       </div>
       <div class="btns-wrap">
-        <div class="btn btn-light" @click="handleToUserList('user')">{{ (merchantInfo.userCount || 0) + $t('home.user') }}</div>
-        <div class="btn btn-light" @click="handleToRecommenderList('recommender')">{{ (merchantInfo.midCount || 0) + $t('home.recommender') }}</div>
+        <button class="btn btn-light" :disabled="isUserBtnDisable" @click="handleToUserList('user')">
+          {{ ((merchantInfo.sellerUser || {}).length || 0) + $t('home.user') }}
+        </button>
+        <button class="btn btn-light" :disabled="isRecoBtnDisable" @click="handleToReferrerList('referrer')">
+          {{ ((merchantInfo.midSeller || {}).length || 0) + $t('home.referrer') }}
+        </button>
       </div>
       <div class="journal-list">
         <div class="journal-title">{{ $t('home.waterTitle') }}</div>
@@ -71,6 +75,12 @@ export default {
       return this.list.length > 0
         ? this.$t('message.noMore')
         : this.$t('message.noData');
+    },
+    isUserBtnDisable() {
+      return !this.merchantInfo || !this.merchantInfo.sellerUser || this.merchantInfo.sellerUser.length == 0
+    },
+    isRecoBtnDisable() {
+      return !this.merchantInfo || !this.merchantInfo.midSeller || this.merchantInfo.midSeller.length == 0
     }
   },
   methods: {
@@ -78,7 +88,7 @@ export default {
       this.$toast.loading();
       setTimeout(() => {
         this.creatQrCode()
-      }, 0);
+      }, 100);
 
       this.reqMerchantInfo();
     },
@@ -93,14 +103,16 @@ export default {
         height: width,
         colorDark: '#000000',
         colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H,
+        // correctLevel: QRCode.CorrectLevel.H,
       });
 
       this.$toast.clear();
     },
 
     handleShowQr() {
-      this.$refs.dialogQR.show(this.$store.state.address);
+      const url = window.location.origin + '/sub?role=user' + `&merchant=${this.address}`;
+      console.log('url', url);
+      this.$refs.dialogQR.show(url);
     },
 
     addressChange(addr) {
@@ -116,12 +128,11 @@ export default {
                 address
                 token
                 amount
-                userCount
-                midCount
-                users
-                mids
+                sellerUser
+                midSeller
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
             id: tsrAddress + this.$store.state.address
           }
@@ -142,7 +153,7 @@ export default {
       try {
         const { data: { logs } } = await this.$apollo.query({
           query: gql`query ($to: Bytes!, $token: Bytes!, $first: Int!, $skip: Int!) {
-            logs(where: { to: $to, token: $token }, first: $first, skip: $skip) {
+            logs(where: { to: $to, token: $token }, first: $first, skip: $skip, orderBy: timestamp, orderDirection: desc) {
                 id,
                 from,
                 to,
@@ -194,11 +205,11 @@ export default {
     },
 
     handleToUserList() {
-      this.$router.push({ path: '/list', query: { role: 'user'} });
+      this.$router.push({ path: '/list', query: { role: 'user', from: this.address } });
     },
     
-    handleToRecommenderList() {
-      this.$router.push({ path: '/list', query: { role: 'recommender'} });
+    handleToReferrerList() {
+      this.$router.push({ path: '/list', query: { role: 'referrer', from: this.address } });
     },
 
     copyCallback: debounce(function() {

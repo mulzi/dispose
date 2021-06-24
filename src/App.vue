@@ -7,20 +7,17 @@
   
     <!--钱包浏览器中打开提示弹窗-->
     <DialogDapp ref="dialogDapp" />
-    <DialogShareQR ref="dialogShareQR" />
   </div>
 </template>
 
 <script>
 import DialogDapp from '@/components/DialogDapp.vue';
-import DialogShareQR from '@/components/DialogShareQR.vue';
 import { releaseTag } from '@/api/contract';
 
 export default {
   name: 'App',
   components: {
     DialogDapp,
-    DialogShareQR
   },
   provide() {
     return {
@@ -57,14 +54,13 @@ export default {
   },
   created() {
     window.addEventListener('resize', this.onResize);
-    this.onResize();
     // 将当前上下文，存入store
     this.$store.commit('setAppVm', this);
     this.$store.dispatch('onAccountsChanged');
     this.$store.dispatch('onNetworkChanged');
-    this.checkIsShowGuide();
   },
   mounted() {
+    this.onResize();
     this.$toast.loading(this.$t('message.connectAdd'));
     // 连接钱包
     this.$store.dispatch('ethereumConnect');
@@ -86,35 +82,9 @@ export default {
     onResize() {
       this.isPc = window.innerWidth > 750;
     },
-    checkIsShowGuide() {
-      if (this.$store.state.isShowGuide) {
-        this.$router.replace({
-          name: 'Guide',
-          query: this.$route.query,
-          params: this.$route.params,
-        });
-      } else {
-        // this.isBuy();
-      }
-    },
-    // 判断是否已认购
-    isBuy() {
-      if (!this.$store.state.address) {
-        return
-      }
-      this.$agencyContract.methods
-        .getTakePositionBalance(this.address)
-        .call()
-        .then((res) => {
-          this.$store.commit('setIsBuy', Number(res) > 0);
-        });
-    },
 
     showDialog() {
       this.$refs.dialogDapp.show();
-    },
-    showQR() {
-      this.$refs.dialogShareQR.show();
     },
   },
 };

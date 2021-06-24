@@ -9,14 +9,14 @@
       <template #left>
         <span class="swift-role">{{ $t('home.switchRole') }}</span>
       </template>
-      <template #right>
+      <!-- <template #right>
         <img
           class="icon icon-lang"
           @click="handleToggleLanguage"
           :src="imgUrlLang"
           :alt="$i18n.locale"
         />
-      </template>
+      </template> -->
     </van-nav-bar>
   </div>
 </template>

@@ -15,4 +15,12 @@ const cache = new InMemoryCache()
 export const apolloClient = new ApolloClient({
   link: httpLink,
   cache,
+  fetchPolicy: "no-cache"
 })
+
+// import ApolloClient from 'apollo-boost'
+
+// export const apolloClient = new ApolloClient({
+//   // You should use an absolute URL here
+//   uri: 'https://api.thegraph.com/subgraphs/name/melanimarrufofwo/burnlogs'
+// })

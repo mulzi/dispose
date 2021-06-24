@@ -6,14 +6,14 @@
       :border="false"
       @click-left="$emit('click-left')"
     >
-      <template #right>
+      <!-- <template #right>
         <img
           class="icon icon-lang"
           @click="handleToggleLanguage"
           :src="imgUrlLang"
           :alt="$i18n.locale"
         />
-      </template>
+      </template> -->
     </van-nav-bar>
   </div>
 </template>
