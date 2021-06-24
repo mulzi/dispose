@@ -1,7 +1,7 @@
 <template>
   <div class="asset-home">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <TheHeader :title="$t('home.title')" @click-left="handleBack" />
+      <TheHeader :title="$t('home.title')" :left-arrow="false" />
       <div class="top-deco"></div>
       <div class="title">{{ $t('home.selectRole') }}</div>
       <div class="opt-item merchant" @click="handleRole('merchant')">
