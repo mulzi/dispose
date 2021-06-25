@@ -35,12 +35,12 @@ export default {
   },
   methods: {
     addressChange(addr) {
-      return addr.slice(0, 6) + ' ...... ' + addr.slice(addr.length - 6);
+      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 6);
     },
     creatQrCode(url) {
       const dom = document.querySelector('.dialog-qr-box');
       const width = dom.clientWidth;
-      this.$refs.qrcode.innerHTML = ''
+      this.$refs.qrcode.innerHTML = '';
       new QRCode(this.$refs.qrcode, {
         text: url, // 需要转换为二维码的内容
         width: width,
