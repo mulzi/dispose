@@ -97,7 +97,7 @@ const cn = {
     invalidMerchantAddress: '无效的商家地址',
     userSub: '我是用户',
     qrCode: '商家收款二维码',
-    cooperationEmail: '商务合作请联系 business@erc20destroy.com',
+    cooperationEmail: '商务合作请联系 business@erc20destory.com',
     merchantTotal: '总额（DST）',
     recommendTotal: '推荐成交总额(DST)',
     disposeTotal: '销毁总量(DST)',
