@@ -5,7 +5,12 @@
         <div class="top">
           <div class="asset-wrap">
             <div class="tit">{{ $t('home.merchantTotal') }}</div>
-            <div class="asset-value">{{ toFixedFloor((merchantInfo.amount || 0) / 1e18, 4) }}</div>
+            <div class="asset-value">{{ toFixedFloor((merchantInfo.amount || 0) / 1e18, 2) }}</div>
+            <Copy :content="$store.state.address" @copyCallback="copyCallback">
+              <p class="address-line">
+                {{ addressChange(address) }} <i class="copy-icon"></i>
+              </p>
+            </Copy>
           </div>
           <div class="qr-wrap" @click="handleShowQr">
             <div class="qr-box">
@@ -14,11 +19,6 @@
             <div class="desc">{{ $t('home.qrCode') }}</div>
           </div>
         </div>
-        <Copy :content="$store.state.address" @copyCallback="copyCallback">
-          <p class="address-line">
-            {{ addressChange(address) }} <i class="copy-icon"></i>
-          </p>
-        </Copy>
       </div>
       <div class="btns-wrap">
         <button class="btn btn-light" :disabled="isUserBtnDisable" @click="handleToUserList('user')">
@@ -93,13 +93,17 @@ export default {
       this.reqMerchantInfo();
     },
 
+    getQRUrl() {
+      return window.location.origin + `/user?merchant=${this.address}&referrer=${this.address}`;
+    },
+
     creatQrCode() {
-      const address = this.$store.state.address;
+      const url = this.getQRUrl();
       const dom = document.querySelector('.qr-box');
       document.querySelector('#qrcode').innerHTML = '';
       const width = dom.clientWidth;
       new QRCode(this.$refs.qrcode, {
-        text: address, // 需要转换为二维码的内容
+        text: url, // 需要转换为二维码的内容
         width: width,
         height: width,
         colorDark: '#000000',
@@ -111,13 +115,13 @@ export default {
     },
 
     handleShowQr() {
-      const url = window.location.origin + '/sub?role=user' + `&merchant=${this.address}&referrer=${this.address}`;
+      const url = this.getQRUrl();
       console.log('url', url);
       this.$refs.dialogQR.show(url, 'merchant');
     },
 
     addressChange(addr) {
-      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 10);
+      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 6);
     },
 
     async reqMerchantInfo() {
@@ -164,6 +168,7 @@ export default {
                 timestamp
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
             first: this.pageSize,
             skip: this.pageNo * this.pageSize,
@@ -243,12 +248,12 @@ export default {
   justify-content: space-between;
 }
 .top .qr-wrap {
-  width: 170px;
+  width: 230px;
   cursor: pointer;
 }
 .top .qr-wrap .qr-box {
-  width: 130px;
-  height: 130px;
+  width: 200px;
+  height: 200px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -260,7 +265,8 @@ export default {
   margin-top: 6px;
 }
 .asset-value {
-  margin-top: 23px;
+  margin-top: 40px;
+  margin-bottom: 60px;
   font-size: 50px;
   font-weight: 500;
   color: #091D42;

@@ -5,16 +5,37 @@ import { pending } from '@/tool/http';
 Vue.use(Router);
 
 const routes = [
+  // {
+  //   path: '/',
+  //   name: 'Index',
+  //   component:  () => import(/* webpackChunkName: "home" */'@/views/index.vue'),
+  // },
   {
-    path: '/',
-    name: 'Index',
-    component:  () => import(/* webpackChunkName: "home" */'@/views/index.vue'),
-  },
-  {
-    path: '/sub', // 角色
+    path: '/', // 角色
     name: 'Sub',
+    redirect: 'user',
     component: () =>
       import(/* webpackChunkName: "sub" */ '@/views/sub.vue'),
+    children: [
+      {
+        path: 'user', // 用户列表
+        name: 'User',
+        component: () =>
+          import(/* webpackChunkName: "sub" */ '@/views/sub/user.vue'),
+      },
+      {
+        path: 'referrer', // 推荐人列表
+        name: 'Referrer',
+        component: () =>
+          import(/* webpackChunkName: "sub" */ '@/views/sub/referrer.vue'),
+      },
+      {
+        path: 'merchant', // 商户列表
+        name: 'Merchant',
+        component: () =>
+          import(/* webpackChunkName: "sub" */ '@/views/sub/merchant.vue'),
+      },
+    ]
   },
   {
     path: '/list', // 用户列表

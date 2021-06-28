@@ -2,13 +2,12 @@
   <div class="header-common">
     <van-nav-bar
       :title="title"
-      left-arrow
       :border="false"
       @click-left="$emit('click-left')"
     >
-      <template #left>
+      <!-- <template #left>
         <span class="swift-role">{{ $t('home.switchRole') }}</span>
-      </template>
+      </template> -->
       <!-- <template #right>
         <img
           class="icon icon-lang"

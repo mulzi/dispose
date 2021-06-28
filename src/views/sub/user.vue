@@ -1,51 +1,54 @@
 <template>
   <div class="user-wrap">
-    <div class="title">{{ $t('home.userSub') }}</div>
-      <div class="c-panel total-panel">
-        <div class="top">
-          <div class="asset-wrap">
-            <div class="tit">{{ $t('home.disposeTotal') }}</div>
-            <div class="asset-value">{{ toFixedFloor((userInfo.amount || 0) / 1e18, 4) }}</div>
-          </div>
+    <div class="title switch-wrap" @click="goToReferrer">
+     <span>{{ $t('home.userSub') }}</span>
+      <img src="../../assets/img/role-switch.png" alt="" class="img">
+    </div>
+    <div class="c-panel total-panel">
+      <div class="top">
+        <div class="asset-wrap">
+          <div class="tit">{{ $t('home.disposeTotal') }}</div>
+          <div class="asset-value">{{ toFixedFloor((userInfo.amount || 0) / 1e18, 2) }}</div>
         </div>
-        <Copy :content="$store.state.address" @copyCallback="copyCallback">
-          <p class="address-line">
-            {{ addressChange(address) }} <i class="copy-icon"></i>
-          </p>
-        </Copy>
       </div>
-      <div class="c-panel input-panel" v-if="isShowDispose">
-        <div class="input-title">{{ $t('home.disposeToken') }}</div>
-        <div class="input-wrap">
-          <span class="input">{{ disposeToken }}</span>
-        </div>
-        <div class="input-title dispose-title">{{ $t('home.disposeNumber') }}</div>
-        <div class="input-wrap">
-          <!-- v-focus -->
-          <input
-            class="input"
-            type="number"
-            v-model="inputValue"
-            oninput="if(value.length>10)value=value.slice(0,10)"
-            placeholder="销毁数量"
-          />
-        </div>
-        <button class="btn btn-dark btn-dispose" :disabled="isDisabled" v-intervalclick='{ func: handleDispose }'>{{ $t('message.confirm') }}</button>
+      <Copy :content="$store.state.address" @copyCallback="copyCallback">
+        <p class="address-line">
+          {{ addressChange(address) }} <i class="copy-icon"></i>
+        </p>
+      </Copy>
+    </div>
+    <div class="c-panel input-panel" v-if="isShowDispose">
+      <div class="input-title">{{ $t('home.disposeToken') }}</div>
+      <div class="input-wrap">
+        <span class="input">{{ disposeToken }}</span>
       </div>
-      <div class="journal-list">
-        <div class="journal-title">
-          <span>{{ $t('home.disposeLog') }}</span>
-        </div>
-        <van-list
-          v-model="listLoading"
-          :finished="listFinished"
-          :finished-text="dataText"
-          @load="onLoad"
-        >
-          <TheLogEmpty v-if="!list.length" />
-          <TheLogItem :item="item" :type="'user'" v-for="(item, index) in list" :key="index" />
-        </van-list>
+      <div class="input-title dispose-title">{{ $t('home.disposeNumber') }}</div>
+      <div class="input-wrap">
+        <!-- v-focus -->
+        <input
+          class="input"
+          type="number"
+          v-model="inputValue"
+          oninput="if(value.length>10)value=value.slice(0,10)"
+          :placeholder="`剩余：${tsrBalance}`"
+        />
       </div>
+      <button class="btn btn-dark btn-dispose" :disabled="isDisabled" v-intervalclick='{ func: handleDispose }'>{{ $t('message.confirm') }}</button>
+    </div>
+    <div class="journal-list">
+      <div class="journal-title">
+        <span>{{ $t('home.disposeLog') }}</span>
+      </div>
+      <van-list
+        v-model="listLoading"
+        :finished="listFinished"
+        :finished-text="dataText"
+        @load="onLoad"
+      >
+        <TheLogEmpty v-if="!list.length" />
+        <TheLogItem :item="item" :type="'user'" v-for="(item, index) in list" :key="index" />
+      </van-list>
+    </div>
   </div>
 </template>
 <script>
@@ -106,7 +109,7 @@ export default {
   },
   methods: {
     watchAddress() {
-      this.reqUserInfo();
+      this.reqUserInfo(true);
       this.reqUserBalance();
       if (this.$route.query.merchant) {
         this.isShowDispose = true;
@@ -131,7 +134,7 @@ export default {
       }
     },
 
-    async reqUserInfo() {
+    async reqUserInfo(refresh = false) {
       try {
         const { data: { user } } = await this.$apollo.query({
           query: gql`query ($id: ID!) {
@@ -142,13 +145,15 @@ export default {
                 amount
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
             id: tsrAddress + this.$store.state.address
           }
         })
 
         this.userInfo = user || {};
-        if (user) {
+        console.log('userInfo', this.userInfo)
+        if (user && refresh) {
           this.onRefresh();
         }
       } catch (error) {
@@ -202,6 +207,8 @@ export default {
       this.list = [];
 
       this.onLoad();
+      this.reqUserInfo();
+      this.reqUserBalance();
     },
 
     onLoad() {
@@ -214,7 +221,10 @@ export default {
 
     // 执行销毁
     async handleDispose() {
-      if (!this.merchant) return;
+      if (!this.$web3.utils.isAddress(this.merchant)) {
+        this.$toast.fail(this.$t('home.invalidMerchantAddress'));
+        return;
+      }
       this.$toast.loading({
         duration: 0,
         forbidClick: true,
@@ -274,6 +284,10 @@ export default {
       return addr.slice(0, 6) + '......' + addr.slice(addr.length - 10);
     },
 
+    goToReferrer() {
+      this.$router.push('/referrer');
+    },
+
     copyCallback: debounce(function() {
       this.$toast.success(this.$t('message.addressCopied'));
     }, 350),
@@ -286,6 +300,21 @@ export default {
   font-size: 36px;
   font-weight: bold;
   color: #fff;
+}
+.switch-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 230px;
+  height: 68px;
+  border: 1px solid #FFFFFF;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.switch-wrap .img {
+  width: 40px;
+  height: 40px;
 }
 .c-panel {
   background: #fff;

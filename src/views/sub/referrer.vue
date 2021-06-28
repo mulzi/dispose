@@ -1,11 +1,14 @@
 <template>
   <div class="referrer-wrap">
-    <div class="title">{{ $t('home.referrerSub') }}</div>
+    <div class="title switch-wrap" @click="goToUser">
+     <span>{{ $t('home.referrerSub') }}</span>
+      <img src="../../assets/img/role-switch.png" alt="" class="img">
+    </div>
       <div class="c-panel total-panel">
         <div class="top">
           <div class="asset-wrap">
             <div class="tit">{{ $t('home.recommendTotal') }}</div>
-            <div class="asset-value">{{ toFixedFloor((referrerInfo.amount || 0) / 1e18, 4) }}</div>
+            <div class="asset-value">{{ toFixedFloor((referrerInfo.amount || 0) / 1e18, 2) }}</div>
           </div>
         </div>
         <Copy :content="$store.state.address" @copyCallback="copyCallback">
@@ -20,6 +23,15 @@
           <input class="input" type="text" v-model="inputAddress" placeholder="0x address" />
         </div>
         <div class="btn btn-dark" @click="handleGenerate">{{ $t('home.generateQr') }}</div>
+        <div class="qr-wrap">
+          <div class="qr-box">
+            <div id="qrcode" ref="qrcode"></div>
+          </div>
+          <div class="tip" v-if="hasQr">
+            <p class="p desc">{{ $t('home.theQr').replace(/\{\{addr\}\}/, addressChange($store.state.address)) }}</p>
+            <p class="tip-scan">{{ $t('home.scanToDispose') }}</p>
+          </div>
+        </div>
       </div>
       <div class="journal-list">
         <div class="journal-title">
@@ -48,6 +60,7 @@ import TheLogEmpty from '@/components/TheLogEmpty.vue';
 import { debounce } from '@/tool/utils';
 import { tsrAddress } from '@/api/contract';
 import gql from 'graphql-tag';
+import QRCode from 'qrcodejs2';
 
 export default {
   components: {
@@ -65,7 +78,8 @@ export default {
       listFinished: true,
       pageNo: 0,
       pageSize: 10,
-      list: []
+      list: [],
+      hasQr: false,
     }
   },
   computed: {
@@ -80,13 +94,35 @@ export default {
       this.reqReferrerInfo();
     },
 
+    getQRUrl() {
+      return window.location.origin + `/user?merchant=${this.inputAddress}&referrer=${this.address}`;
+    },
+
+    creatQrCode() {
+      const address = this.getQRUrl();
+      const dom = document.querySelector('.qr-box');
+      document.querySelector('#qrcode').innerHTML = '';
+      const width = dom.clientWidth;
+      new QRCode(this.$refs.qrcode, {
+        text: address, // 需要转换为二维码的内容
+        width: width,
+        height: width,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        // correctLevel: QRCode.CorrectLevel.H,
+      });
+
+      this.hasQr = true;
+    },
+
     handleGenerate() {
       if (!this.$web3.utils.isAddress(this.inputAddress)) {
         return this.$toast.fail(this.$t('message.invalidAddress'));
       }
 
-      const url = window.location.origin + '/sub?role=user' + `&merchant=${this.inputAddress}&referrer=${this.address}`;
-      this.$refs.dialogQR.show(url);
+      this.creatQrCode();
+      // const url = this.getQRUrl();
+      // this.$refs.dialogQR.show(url);
     },
 
     async reqReferrerInfo() {
@@ -102,6 +138,7 @@ export default {
                 midSeller
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
             id: tsrAddress + this.$store.state.address
           }
@@ -173,14 +210,16 @@ export default {
       this.reqRecommendList();
     },
 
-
-
     addressChange(addr) {
-      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 10);
+      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 6);
     },
 
     handleToList() {
       this.$router.push({ path: '/list', query: { role: 'merchant', from: this.address }});
+    },
+
+    goToUser() {
+      this.$router.push('/user');
     },
 
     copyCallback: debounce(function() {
@@ -195,6 +234,21 @@ export default {
   font-size: 36px;
   font-weight: bold;
   color: #fff;
+}
+.switch-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 260px;
+  height: 68px;
+  border: 1px solid #FFFFFF;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.switch-wrap .img {
+  width: 40px;
+  height: 40px;
 }
 .c-panel {
   background: #fff;
@@ -250,7 +304,24 @@ export default {
   font-size: 28px;
 }
 .input-panel .btn {
-  margin-top: 102px;
+  width: 500px;
+  margin: 102px auto 0;
+}
+
+.input-panel .qr-wrap {
+  width: 480px;
+  margin: 50px auto 0;
+  text-align: center;
+}
+
+.input-panel .desc {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+.input-panel .tip-scan {
+  font-size: 26px;
+  font-weight: normal;
+  color: #5B6881;
 }
 
 .journal-list {

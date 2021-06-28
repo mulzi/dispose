@@ -1,9 +1,10 @@
 <template>
   <div class="role-wrapper">
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <TheHeaderSub :title="$t('home.title')" @click-left="handleBack" />
+      <TheHeaderSub :title="$t('home.title')" />
       <div class="top-deco"></div>
-      <component class="content" :is="role" ref="subView" :refreshing="refreshing" />
+      <!-- <component class="content" :is="role" ref="subView" :refreshing="refreshing" /> -->
+      <router-view class="content" ref="subView" :refreshing="refreshing" />
       <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
     </van-pull-refresh>
   </div>
@@ -11,26 +12,32 @@
 
 <script>
 import TheHeaderSub from '@/components/TheHeaderSub.vue';
-import merchant from './sub/merchant.vue'
-import referrer from './sub/referrer.vue'
-import user from './sub/user.vue'
+// import merchant from './sub/merchant.vue'
+// import referrer from './sub/referrer.vue'
+// import user from './sub/user.vue'
 
 export default {
   components: {
     TheHeaderSub,
-    user,
-    merchant,
-    referrer,
+    // user,
+    // merchant,
+    // referrer,
   },
   data() {
     return {
       loading: false,
       refreshing: false,
+      // role: 'user',
     };
   },
   computed: {
     role() {
-      return this.$route.query.role
+      if (['referrer', 'merchant', 'user'].includes(this.$route.query.role)) {
+        return this.$route.query.role;
+      } else {
+        return 'user';
+      }
+      // return this.$route.query.role || 'user'
     }
   },
   methods: {
