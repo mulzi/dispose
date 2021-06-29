@@ -21,16 +21,16 @@ input:focus {
   color: #091d42 !important;
 }
 ::-webkit-input-placeholder {
-  color: #adb0ca;
+  color: #dee0e9;
 }
 ::-moz-placeholder {
-  color: #adb0ca;
+  color: #dee0e9;
 } /* firefox 19+ */
 :-ms-input-placeholder {
-  color: #adb0ca;
+  color: #dee0e9;
 } /* ie */
 input:-moz-placeholder {
-  color: #adb0ca;
+  color: #dee0e9;
 }
 
 /*谷歌*/

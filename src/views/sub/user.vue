@@ -30,7 +30,7 @@
           type="number"
           v-model="inputValue"
           oninput="if(value.length>10)value=value.slice(0,10)"
-          :placeholder="`剩余：${tsrBalance}`"
+          :placeholder="tsrBalance"
         />
       </div>
       <p class="risk-tip protocol-tip">

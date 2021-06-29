@@ -5,9 +5,9 @@
       <span class="value" v-if="type == 'user'">-{{ toFixedFloor((item.amount || 0) / 1e18) }}(TSR)</span>
       <span class="value" v-if="type == 'merchant' || type == 'referrer'">+{{ toFixedFloor((item.amount || 0) / 1e18) }}(DST)</span>
     </div>
-    <div class="addr" v-if="type == 'user'">From: {{ item.from }}</div>
+    <div class="addr" v-if="type == 'user'">To: {{ item.to }}</div>
     <div class="addr" v-if="type == 'merchant'">Referrer: {{ item.mid }}</div>
-    <div class="addr" v-if="type == 'referrer'">User: {{ item.from }}</div>
+    <div class="addr" v-if="type == 'merchant' || type == 'referrer'">From: {{ item.from }}</div>
     <div class="addr" v-if="type == 'referrer'">To: {{ item.to }}</div>
   </div>
 </template>

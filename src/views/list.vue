@@ -100,7 +100,7 @@ export default {
     },
 
     addressChange(addr) {
-      return addr.slice(0, 6) + '......' + addr.slice(addr.length - 6);
+      return addr.slice(0, 4) + '......' + addr.slice(addr.length - 6);
     },
 
     async queryUser(from) {
@@ -317,13 +317,13 @@ export default {
   color: #ADB0CA;
 }
 .content .tr .no {
-  flex: 2;
+  flex: 1;
 }
 .content .tr .address {
-  flex: 8;
+  flex: 3;
 }
 .content .tr .amount {
-  flex: 7;
+  flex: 3;
   text-align: right;
 }
 .content .tb {
