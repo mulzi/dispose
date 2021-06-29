@@ -207,6 +207,14 @@ input[type='number'] {
   margin-right: auto;
 }
 
+.coop-mail {
+  font-size: 24px;
+  font-weight: 500;
+  color: #ADB0CA;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
 @media only screen and (max-width: 750px) {
   .pc {
     display: none !important;

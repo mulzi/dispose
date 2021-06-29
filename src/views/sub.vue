@@ -3,10 +3,14 @@
     <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
       <TheHeaderSub :title="$t('home.title')" />
       <div class="top-deco"></div>
-      <!-- <component class="content" :is="role" ref="subView" :refreshing="refreshing" /> -->
       <router-view class="content" ref="subView" :refreshing="refreshing" />
-      <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
     </van-pull-refresh>
+    <!-- <div class="to-merchant" v-if="['/user', '/referrer'].includes($route.path)">
+      <div class="btn" @click="goToMerchant">
+        <span>{{ $t('home.toMerchant') }}</span>
+        <van-icon name="arrow" />
+      </div>
+    </div> -->
   </div>
 </template>
 
@@ -48,6 +52,10 @@ export default {
       }
       this.$refs.subView.onRefresh();
     },
+    
+    goToMerchant() {
+      this.$router.push('/merchant');
+    },
 
     handleBack() {
       // this.MyGo(-1);
@@ -77,13 +85,27 @@ export default {
   margin: 10px auto;
 }
 
-
-.coop-mail {
+.to-merchant {
+  position: sticky;
+  bottom: 40px;
+  width: 100%;
+  text-align: center;
+}
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 24px;
   font-weight: 500;
-  color: #ADB0CA;
-  text-align: center;
-  margin-bottom: 30px;
+  color: #ffa600;
+  margin: 0 auto 40px;
+  width: 200px;
+  height: 60px;
+  line-height: 60px;
+  background-color: #ffffff50;
+}
+.van-icon-arrow {
+  margin-left: 8px;
 }
 @media only screen and (max-width: 750px) {
   .role-wrapper {

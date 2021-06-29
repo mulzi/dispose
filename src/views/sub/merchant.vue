@@ -1,46 +1,50 @@
 <template>
   <div class="merchant-wrap">
-    <div class="title">{{ $t('home.merchantSub') }}</div>
-      <div class="c-panel total-panel">
-        <div class="top">
-          <div class="asset-wrap">
-            <div class="tit">{{ $t('home.merchantTotal') }}</div>
-            <div class="asset-value">{{ toFixedFloor((merchantInfo.amount || 0) / 1e18, 2) }}</div>
-            <Copy :content="$store.state.address" @copyCallback="copyCallback">
-              <p class="address-line">
-                {{ addressChange(address) }} <i class="copy-icon"></i>
-              </p>
-            </Copy>
+    <div class="title switch-wrap" @click="goToUser">
+     <span>{{ $t('home.merchantSub') }}</span>
+      <img src="../../assets/img/role-switch.png" alt="" class="img">
+    </div>
+    <div class="c-panel total-panel">
+      <div class="top">
+        <div class="asset-wrap">
+          <div class="tit">{{ $t('home.merchantTotal') }}</div>
+          <div class="asset-value">{{ toFixedFloor((merchantInfo.amount || 0) / 1e18, 2) }}</div>
+          <Copy :content="$store.state.address" @copyCallback="copyCallback">
+            <p class="address-line">
+              {{ addressChange(address) }} <i class="copy-icon"></i>
+            </p>
+          </Copy>
+        </div>
+        <div class="qr-wrap" @click="handleShowQr">
+          <div class="qr-box">
+            <div id="qrcode" ref="qrcode"></div>
           </div>
-          <div class="qr-wrap" @click="handleShowQr">
-            <div class="qr-box">
-              <div id="qrcode" ref="qrcode"></div>
-            </div>
-            <div class="desc">{{ $t('home.qrCode') }}</div>
-          </div>
+          <div class="desc">{{ $t('home.qrCode') }}</div>
         </div>
       </div>
-      <div class="btns-wrap">
-        <button class="btn btn-light" :disabled="isUserBtnDisable" @click="handleToUserList('user')">
-          {{ ((merchantInfo.sellerUser || {}).length || 0) + $t('home.user') }}
-        </button>
-        <button class="btn btn-light" :disabled="isRecoBtnDisable" @click="handleToReferrerList('referrer')">
-          {{ ((merchantInfo.midSeller || {}).length || 0) + $t('home.referrer') }}
-        </button>
-      </div>
-      <div class="journal-list">
-        <div class="journal-title">{{ $t('home.waterTitle') }}</div>
-        <van-list
-          v-model="listLoading"
-          :finished="listFinished"
-          :finished-text="dataText"
-          @load="onLoad"
-        >
-          <TheLogEmpty v-if="!list.length" />
-          <TheLogItem :item="item" :type="'merchant'" v-for="(item, index) in list" :key="index" />
-        </van-list>
-      </div>
-      <DialogDisposeQrCode  ref="dialogQR" />
+    </div>
+    <div class="btns-wrap">
+      <button class="btn btn-light" :disabled="isUserBtnDisable" @click="handleToUserList('user')">
+        {{ ((merchantInfo.sellerUser || {}).length || 0) + $t('home.user') }}
+      </button>
+      <button class="btn btn-light" :disabled="isRecoBtnDisable" @click="handleToReferrerList('referrer')">
+        {{ ((merchantInfo.midSeller || {}).length || 0) + $t('home.referrer') }}
+      </button>
+    </div>
+    <div class="journal-list">
+      <div class="journal-title">{{ $t('home.waterTitle') }}</div>
+      <van-list
+        v-model="listLoading"
+        :finished="listFinished"
+        :finished-text="dataText"
+        @load="onLoad"
+      >
+        <TheLogEmpty v-if="!list.length" />
+        <TheLogItem :item="item" :type="'merchant'" v-for="(item, index) in list" :key="index" />
+      </van-list>
+    </div>
+    <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
+    <DialogDisposeQrCode  ref="dialogQR" />
   </div>
 </template>
 <script>
@@ -210,6 +214,10 @@ export default {
       this.reqWaterList();
     },
 
+    goToUser() {
+      this.$router.push('/user');
+    },
+
     handleToUserList() {
       this.$router.push({ path: '/list', query: { role: 'user', from: this.address } });
     },
@@ -230,6 +238,21 @@ export default {
   font-size: 36px;
   font-weight: bold;
   color: #fff;
+}
+.switch-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 260px;
+  height: 68px;
+  border: 1px solid #FFFFFF;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.switch-wrap .img {
+  width: 40px;
+  height: 40px;
 }
 .c-panel {
   background: #fff;

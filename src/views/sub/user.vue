@@ -33,6 +33,16 @@
           :placeholder="`剩余：${tsrBalance}`"
         />
       </div>
+      <p class="risk-tip protocol-tip">
+        <span class="handler" @click="handleAgreeProtocol" :class="{ on: isAgreed }">{{ $t('home.protocolPrev') }}</span>
+        <a
+          href="javascript:void(0);"
+          class="link"
+          @click.stop="$refs.dialogProtocol.show()"
+        >
+          {{ $t('home.protocolName') }}
+        </a>
+      </p>
       <button class="btn btn-dark btn-dispose" :disabled="isDisabled" v-intervalclick='{ func: handleDispose }'>{{ $t('message.confirm') }}</button>
     </div>
     <div class="journal-list">
@@ -49,19 +59,27 @@
         <TheLogItem :item="item" :type="'user'" v-for="(item, index) in list" :key="index" />
       </van-list>
     </div>
+    <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
+    <div class="to-merchant" @click="goToMerchant">
+      <span>{{ $t('home.toMerchant') }}</span>
+      <van-icon name="arrow" />
+    </div>
+    <DialogProtocol ref="dialogProtocol" />
   </div>
 </template>
 <script>
 import gql from 'graphql-tag';
 import TheLogItem from '@/components/TheLogItem.vue';
 import TheLogEmpty from '@/components/TheLogEmpty.vue';
+import DialogProtocol from '@/components/DialogProtocol.vue';
 import { debounce } from '@/tool/utils';
 import { tsrAddress, disposeAddress } from '@/api/contract';
 
 export default {
   components: {
     TheLogItem,
-    TheLogEmpty
+    TheLogEmpty,
+    DialogProtocol
   },
   data() {
     return {
@@ -82,7 +100,8 @@ export default {
       },
       pageNo: 0,
       pageSize: 10,
-      list: []
+      list: [],
+      isAgreed: false,
     }
   },
   computed: {
@@ -92,7 +111,7 @@ export default {
         : this.$t('message.noData');
     },
     isDisabled() {
-      return +this.inputValue <= 0;
+      return +this.inputValue <= 0 || !this.isAgreed;
     }
   },
   watch: {
@@ -284,6 +303,14 @@ export default {
       return addr.slice(0, 6) + '......' + addr.slice(addr.length - 10);
     },
 
+    handleAgreeProtocol() {
+      this.isAgreed = !this.isAgreed;
+    },
+        
+    goToMerchant() {
+      this.$router.push('/merchant');
+    },
+
     goToReferrer() {
       this.$router.push('/referrer');
     },
@@ -374,11 +401,55 @@ export default {
   width: 100%;
   line-height: 42px;
   height: 42px;
-  font-size: 26px;
+  font-size: 30px;
+  font-size: bold;
 }
 .input-panel .btn-dispose {
-  margin-top: 60px;
+  margin-top: 40px;
   width: 500px;
+}
+.input-panel .protocol-tip {
+  position: relative;
+  padding-left: 40px;
+  margin-top: 20px;
+}
+.input-panel .handler {
+  position: relative;
+}
+.input-panel .handler::before {
+  content: '';
+  position: absolute;
+  left: -40px;
+  top: 2px;
+  display: block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ffa600;
+  border-radius: 6px;
+}
+.input-panel .handler.on::before {
+  border: 2px solid #ffa600;
+  background: #ffa600;
+  border-radius: 5px;
+}
+.input-panel .handler::after {
+  content: '';
+  position: absolute;
+  left: -34px;
+  top: 8px;
+  display: block;
+  width: 12px;
+  height: 6px;
+  border-left: 4px solid #fcf1dd;
+  border-bottom: 4px solid #fcf1dd;
+  transform: rotate(-45deg);
+}
+.input-panel .handler.on::after {
+  border-left: 4px solid rgb(255, 255, 255);
+  border-bottom: 4px solid rgb(255, 255, 255);
+}
+.input-panel .protocol-tip .link {
+  color: #ffa600;
 }
 
 .journal-list {
@@ -421,4 +492,14 @@ export default {
   color: #091D42;
 }
 
+.to-merchant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 500;
+  color: #ffa600;
+  margin: 0 auto 40px;
+  width: 200px;
+}
 </style>

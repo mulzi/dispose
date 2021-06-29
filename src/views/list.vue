@@ -31,7 +31,10 @@
           <div class="tr tb" v-for="(item, index) in list" :key="index" @click="handleToDetail(item)">
             <div class="td no">{{ index + 1 }}</div>
             <div class="td address">{{ addressChange(item.userAddress || item.midAddress || item.sellerAddress) }}</div>
-            <div class="td amount">{{ fromWei(item.amount) }} DST</div>
+            <div class="td amount">
+              {{ fromWei(item.amount) }} DST
+            </div>
+            <van-icon name="arrow" />
           </div>
         </van-list>
       </div>
@@ -314,13 +317,13 @@ export default {
   color: #ADB0CA;
 }
 .content .tr .no {
-  flex: 1;
+  flex: 2;
 }
 .content .tr .address {
-  flex: 5;
+  flex: 8;
 }
 .content .tr .amount {
-  flex: 4;
+  flex: 7;
   text-align: right;
 }
 .content .tb {

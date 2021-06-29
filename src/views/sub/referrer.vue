@@ -4,53 +4,63 @@
      <span>{{ $t('home.referrerSub') }}</span>
       <img src="../../assets/img/role-switch.png" alt="" class="img">
     </div>
-      <div class="c-panel total-panel">
-        <div class="top">
-          <div class="asset-wrap">
-            <div class="tit">{{ $t('home.recommendTotal') }}</div>
-            <div class="asset-value">{{ toFixedFloor((referrerInfo.amount || 0) / 1e18, 2) }}</div>
-          </div>
+    <div class="c-panel total-panel">
+      <div class="top">
+        <div class="asset-wrap">
+          <div class="tit">{{ $t('home.recommendTotal') }}</div>
+          <div class="asset-value">{{ toFixedFloor((referrerInfo.amount || 0) / 1e18, 2) }}</div>
         </div>
-        <Copy :content="$store.state.address" @copyCallback="copyCallback">
-          <p class="address-line">
-            {{ addressChange(address) }} <i class="copy-icon"></i>
-          </p>
-        </Copy>
       </div>
-      <div class="c-panel input-panel">
+      <Copy :content="$store.state.address" @copyCallback="copyCallback">
+        <p class="address-line">
+          {{ addressChange(address) }} <i class="copy-icon"></i>
+        </p>
+      </Copy>
+    </div>
+    <div class="c-panel input-panel">
+      <div v-show="!hasQr">
         <div class="input-title">{{ $t('home.inputMerchantAddress') }}</div>
         <div class="input-wrap">
           <input class="input" type="text" v-model="inputAddress" placeholder="0x address" />
         </div>
         <div class="btn btn-dark" @click="handleGenerate">{{ $t('home.generateQr') }}</div>
-        <div class="qr-wrap">
-          <div class="qr-box">
-            <div id="qrcode" ref="qrcode"></div>
-          </div>
-          <div class="tip" v-if="hasQr">
-            <p class="p desc">{{ $t('home.theQr').replace(/\{\{addr\}\}/, addressChange($store.state.address)) }}</p>
-            <p class="tip-scan">{{ $t('home.scanToDispose') }}</p>
-          </div>
+      </div>
+      <div class="qr-wrap" v-show="hasQr">
+        <div class="qr-title" @click="handleReGene">
+          <van-icon class="arrow-back" name="arrow-left" />
+          <p>{{ $t('home.scanToDispose') }}</p>
+        </div>
+        <div class="qr-box">
+          <div id="qrcode" ref="qrcode"></div>
+        </div>
+        <div class="tip">
+          <p class="p desc">{{ $t('home.theQr').replace(/\{\{addr\}\}/, addressChange($store.state.address)) }}</p>
         </div>
       </div>
-      <div class="journal-list">
-        <div class="journal-title">
-          <span>{{ $t('home.recommendLog') }}</span>
-          <span class="tip" @click="handleToList('cooperators')">
-            {{ ((referrerInfo.midSeller || {}).length || 0) + $t('home.recommendLogTip') }}
-          </span>
-        </div>
-        <van-list
-          v-model="listLoading"
-          :finished="listFinished"
-          :finished-text="dataText"
-          @load="onLoad"
-        >
-          <TheLogEmpty v-if="!list.length" />
-          <TheLogItem :item="item" :type="'referrer'" v-for="(item, index) in list" :key="index" />
-        </van-list>
+    </div>
+    <div class="journal-list">
+      <div class="journal-title">
+        <span>{{ $t('home.recommendLog') }}</span>
+        <span class="tip" @click="handleToList('cooperators')">
+          {{ ((referrerInfo.midSeller || {}).length || 0) + $t('home.recommendLogTip') }}
+        </span>
       </div>
-      <DialogDisposeQrCode ref="dialogQR" />
+      <van-list
+        v-model="listLoading"
+        :finished="listFinished"
+        :finished-text="dataText"
+        @load="onLoad"
+      >
+        <TheLogEmpty v-if="!list.length" />
+        <TheLogItem :item="item" :type="'referrer'" v-for="(item, index) in list" :key="index" />
+      </van-list>
+    </div>
+    <div class="coop-mail">{{ $t('home.cooperationEmail') }}</div>
+    <div class="to-merchant" @click="goToMerchant">
+      <span>{{ $t('home.toMerchant') }}</span>
+      <van-icon name="arrow" />
+    </div>
+    <DialogDisposeQrCode ref="dialogQR" />
   </div>
 </template>
 <script>
@@ -111,8 +121,10 @@ export default {
         colorLight: '#ffffff',
         // correctLevel: QRCode.CorrectLevel.H,
       });
+    },
 
-      this.hasQr = true;
+    handleReGene() {
+      this.hasQr = false;
     },
 
     handleGenerate() {
@@ -120,7 +132,10 @@ export default {
         return this.$toast.fail(this.$t('message.invalidAddress'));
       }
 
-      this.creatQrCode();
+      this.hasQr = true;
+      setTimeout(() => {
+        this.creatQrCode();
+      }, 10);
       // const url = this.getQRUrl();
       // this.$refs.dialogQR.show(url);
     },
@@ -217,6 +232,10 @@ export default {
     handleToList() {
       this.$router.push({ path: '/list', query: { role: 'merchant', from: this.address }});
     },
+            
+    goToMerchant() {
+      this.$router.push('/merchant');
+    },
 
     goToUser() {
       this.$router.push('/user');
@@ -309,14 +328,25 @@ export default {
 }
 
 .input-panel .qr-wrap {
+  position: relative;
   width: 480px;
-  margin: 50px auto 0;
+  min-height: 520px;
+  margin: 0 auto;
   text-align: center;
 }
-
+.input-panel .qr-wrap .qr-title {
+  font-size: 36px;
+  font-weight: normal;
+  color: #5B6881;
+  margin-bottom: 30px;
+}
+.input-panel .qr-wrap .arrow-back {
+  position: absolute;
+  left: -50px;
+  top: 6px;
+}
 .input-panel .desc {
   margin-top: 30px;
-  margin-bottom: 10px;
 }
 .input-panel .tip-scan {
   font-size: 26px;
@@ -365,4 +395,14 @@ export default {
   color: #091D42;
 }
 
+.to-merchant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 500;
+  color: #ffa600;
+  margin: 0 auto 40px;
+  width: 200px;
+}
 </style>
