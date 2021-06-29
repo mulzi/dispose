@@ -7,8 +7,8 @@
     <div class="c-panel total-panel">
       <div class="top">
         <div class="asset-wrap">
-          <div class="tit">{{ $t('home.disposeTotal') }}</div>
-          <div class="asset-value">{{ toFixedFloor((userInfo.amount || 0) / 1e18, 2) }}</div>
+          <span class="tit">{{ $t('home.disposeTotal') }}</span>
+          <span class="asset-value">{{ toFixedFloor((userInfo.amount || 0) / 1e18, 2) }}</span>
         </div>
       </div>
       <Copy :content="$store.state.address" @copyCallback="copyCallback">
@@ -128,6 +128,7 @@ export default {
   },
   methods: {
     watchAddress() {
+      this.list = [];
       this.reqUserInfo(true);
       this.reqUserBalance();
       if (this.$route.query.merchant) {
@@ -352,14 +353,17 @@ export default {
   margin-top: 30px;
   padding: 80px 30px 70px;
   font-size: 28px;
-  font-weight: 500;
   color: #ADB0CA;
 }
+.total-panel .asset-wrap {
+  display: flex;
+  align-items: center;
+}
 .total-panel .asset-value {
-  margin-top: 23px;
-  font-size: 48px;
+  font-size: 56px;
   font-weight: 500;
   color: #091D42;
+  margin-left: 30px;
 }
 .total-panel .address-line {
   display: flex;

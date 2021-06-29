@@ -94,6 +94,7 @@ export default {
         this.creatQrCode()
       }, 100);
 
+      this.list = [];
       this.reqMerchantInfo();
     },
 

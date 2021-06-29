@@ -7,8 +7,8 @@
     <div class="c-panel total-panel">
       <div class="top">
         <div class="asset-wrap">
-          <div class="tit">{{ $t('home.recommendTotal') }}</div>
-          <div class="asset-value">{{ toFixedFloor((referrerInfo.amount || 0) / 1e18, 2) }}</div>
+          <span class="tit">{{ $t('home.recommendTotal') }}</span>
+          <span class="asset-value">{{ toFixedFloor((referrerInfo.amount || 0) / 1e18, 2) }}</span>
         </div>
       </div>
       <Copy :content="$store.state.address" @copyCallback="copyCallback">
@@ -101,6 +101,7 @@ export default {
   },
   methods: {
     watchAddress() {
+      this.list = [];
       this.reqReferrerInfo();
     },
 
@@ -281,11 +282,22 @@ export default {
   font-weight: 500;
   color: #ADB0CA;
 }
+.total-panel {
+  line-height: 1;
+  margin-top: 30px;
+  padding: 80px 30px 70px;
+  font-size: 28px;
+  color: #ADB0CA;
+}
+.total-panel .asset-wrap {
+  display: flex;
+  align-items: center;
+}
 .total-panel .asset-value {
-  margin-top: 23px;
-  font-size: 48px;
+  font-size: 56px;
   font-weight: 500;
   color: #091D42;
+  margin-left: 30px;
 }
 .total-panel .address-line {
   display: flex;
@@ -347,6 +359,7 @@ export default {
 }
 .input-panel .desc {
   margin-top: 30px;
+  color: #ADB0CA;
 }
 .input-panel .tip-scan {
   font-size: 26px;

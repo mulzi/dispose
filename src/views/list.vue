@@ -80,6 +80,7 @@ export default {
   },
   methods: {
     watchAddress() {
+      this.list = [];
       this.from = this.$route.query.from;
       if (this.$route.query.role === 'user') {
         this.type = 'user';
@@ -317,13 +318,13 @@ export default {
   color: #ADB0CA;
 }
 .content .tr .no {
-  flex: 1;
+  flex: 2;
 }
 .content .tr .address {
-  flex: 3;
+  flex: 5;
 }
 .content .tr .amount {
-  flex: 3;
+  flex: 5;
   text-align: right;
 }
 .content .tb {

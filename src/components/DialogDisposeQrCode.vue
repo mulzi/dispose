@@ -78,7 +78,7 @@ export default {
 .dialog-dispose-qr-wrap .desc {
   font-size: 26px;
   font-weight: 400;
-  color: #666666;
+  color: #ADB0CA;
   margin-top: 30px;
   margin-bottom: 30px;
   text-align: left;
