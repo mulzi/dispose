@@ -19,9 +19,13 @@ yarn build
   ./src/store/index.js 中 rewardDeadline 奖励截止日期
 
 测试服打包，需确认 .env.staging 中的配置
+```
 yarn build:staging
+```
 正式服打包，需确认 .env.production 中的配置
+```
 yarn build:production
+```
 
 ### Lints and fixes files
 ```
