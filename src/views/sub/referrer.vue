@@ -126,6 +126,7 @@ export default {
 
     handleReGene() {
       this.hasQr = false;
+      this.inputAddress = '';
     },
 
     handleGenerate() {
@@ -136,7 +137,7 @@ export default {
       this.hasQr = true;
       setTimeout(() => {
         this.creatQrCode();
-      }, 10);
+      }, 6);
       // const url = this.getQRUrl();
       // this.$refs.dialogQR.show(url);
     },

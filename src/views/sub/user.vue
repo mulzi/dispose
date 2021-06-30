@@ -248,7 +248,7 @@ export default {
       this.$toast.loading({
         duration: 0,
         forbidClick: true,
-        message: this.$t('message.handling')
+        message: this.$t('message.destroying')
       })
       const extraData = this.merchant + (this.referrer ? this.referrer.slice(2) : '0000000000000000000000000000000000000000');
       console.log('extraData', extraData);
@@ -278,7 +278,8 @@ export default {
       this.clearStateTimer();
       this.addIng = false;
       this.$toast.clear();
-      this.$toast.success(this.$t('message.handleOK'));
+      this.$toast.success(this.$t('message.destroyOK'));
+      this.inputValue = '';
 
       this.timer = setTimeout(() => {
         this.onRefresh();
@@ -297,7 +298,7 @@ export default {
         return;
       }
 
-      this.$toast.fail(this.$t('message.handleError'));
+      this.$toast.fail(this.$t('message.destroyError'));
     },
 
     addressChange(addr) {

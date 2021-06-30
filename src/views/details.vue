@@ -137,7 +137,7 @@ export default {
     },
     watchAddress() {
       if (this.$route.query.user) {
-        this.type = 'user';
+        this.type = 'mer-user';
         this.title = this.$t('home.user') + this.addressShort(this.$route.query.user) + this.$t('home.disposeDetail');
         this.curAddress = this.$route.query.user;
       } else if (this.$route.query.referrer) {
