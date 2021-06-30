@@ -57,7 +57,7 @@ const routes = [
 
 const router = new Router({
   // mode: 'history',
-  mode: 'hash',
+  mode: 'hash', // 如果要打包部署到fleek.co上，则需要hash模式
   // scrollBehavior: () => ({ y: 0 }),
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
