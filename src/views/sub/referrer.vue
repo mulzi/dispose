@@ -109,7 +109,7 @@ export default {
     },
 
     getQRUrl() {
-      return window.location.origin + `/user?merchant=${this.inputAddress}&referrer=${this.address}`;
+      return window.location.origin + `/#/user?merchant=${this.inputAddress}&referrer=${this.address}`;
     },
 
     creatQrCode() {

@@ -56,7 +56,8 @@ const routes = [
 ]
 
 const router = new Router({
-  mode: 'history',
+  // mode: 'history',
+  mode: 'hash',
   // scrollBehavior: () => ({ y: 0 }),
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
