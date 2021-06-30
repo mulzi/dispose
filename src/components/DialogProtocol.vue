@@ -46,7 +46,7 @@ export default {
 .dialog-protocol .title {
   font-size: 36px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
   line-height: 48px;
   text-align: center;
 }

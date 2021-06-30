@@ -336,10 +336,11 @@ export default {
   align-items: center;
   width: 230px;
   height: 68px;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #fff;
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
+  cursor: pointer;
 }
 .switch-wrap .img {
   width: 40px;
@@ -354,7 +355,7 @@ export default {
   margin-top: 30px;
   padding: 80px 30px 70px;
   font-size: 28px;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .total-panel .asset-wrap {
   display: flex;
@@ -363,13 +364,14 @@ export default {
 .total-panel .asset-value {
   font-size: 56px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
   margin-left: 30px;
 }
 .total-panel .address-line {
   display: flex;
   align-items: center;
   margin-top: 20px;
+  cursor: pointer;
 }
 .total-panel .address-line .copy-icon {
   display: inline-block;
@@ -388,7 +390,7 @@ export default {
 .input-panel .input-title {
   font-size: 28px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
   margin-bottom: 20px;
 }
 .input-panel .dispose-title {
@@ -398,7 +400,7 @@ export default {
   height: 80px;
   line-height: 80px;
   background: #fff;
-  border: 1px solid #F6F7F8;
+  border: 1px solid #f6f7f8;
   border-radius: 20px;
   text-indent: 16px;
 }
@@ -467,12 +469,12 @@ export default {
   margin-bottom: 30px;
   font-size: 36px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 .journal-list .journal-title .tip {
   font-size: 28px;
   font-weight: 500;
-  color: #A65200;
+  color: #a65200;
 }
 
 .journal-list .journal-item {
@@ -483,7 +485,7 @@ export default {
   border-radius: 20px;
   font-size: 25px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .journal-list .journal-item .head {
   display: flex;
@@ -494,7 +496,7 @@ export default {
 .journal-list .journal-item .head .value {
   font-size: 30px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 
 .to-merchant {
@@ -506,5 +508,6 @@ export default {
   color: #ffa600;
   margin: 0 auto 40px;
   width: 200px;
+  cursor: pointer;
 }
 </style>

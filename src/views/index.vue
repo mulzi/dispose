@@ -66,13 +66,13 @@ export default {
 .top-deco {
   width: 100%;
   height: 60px;
-  background: #FFA600;
+  background: #ffa600;
   border-radius: 0px 0px 60px 60px;
 }
 .title {
   font-size: 36px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
   margin: 64px auto 46px;
 }
 .opt-item {
@@ -94,12 +94,12 @@ export default {
 .opt-item .role {
   font-size: 36px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 .coop-mail {
   font-size: 24px;
   font-weight: 500;
-  color: #ADB0CA;
+  color: #adb0ca;
   text-align: center;
   margin-bottom: 30px;
 }

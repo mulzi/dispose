@@ -41,7 +41,7 @@
     <div class="journal-list">
       <div class="journal-title">
         <span>{{ $t('home.recommendLog') }}</span>
-        <span class="tip" @click="handleToList('cooperators')">
+        <span class="tip btn btn-lignt" @click="handleToList('cooperators')">
           {{ ((referrerInfo.midSeller || {}).length || 0) + $t('home.recommendLogTip') }}
         </span>
       </div>
@@ -102,7 +102,7 @@ export default {
   methods: {
     watchAddress() {
       this.list = [];
-      this.reqReferrerInfo();
+      this.reqReferrerInfo(true);
     },
 
     getQRUrl() {
@@ -142,7 +142,7 @@ export default {
       // this.$refs.dialogQR.show(url);
     },
 
-    async reqReferrerInfo() {
+    async reqReferrerInfo(isInit = false) {
       try {
         const { data: { mid } } = await this.$apollo.query({
           query: gql`query ($id: ID!) {
@@ -162,7 +162,7 @@ export default {
         })
 
         this.referrerInfo = mid || {};
-        if (mid) {
+        if (mid && isInit) {
           this.onRefresh();
         }
         console.log('referrer info', this.referrerInfo);
@@ -217,6 +217,7 @@ export default {
       this.list = [];
 
       this.onLoad();
+      this.reqReferrerInfo(false);
     },
 
     onLoad() {
@@ -262,10 +263,11 @@ export default {
   align-items: center;
   width: 260px;
   height: 68px;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #fff;
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
+  cursor: pointer;
 }
 .switch-wrap .img {
   width: 40px;
@@ -281,14 +283,14 @@ export default {
   padding: 80px 30px 70px;
   font-size: 28px;
   font-weight: 500;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .total-panel {
   line-height: 1;
   margin-top: 30px;
   padding: 80px 30px 70px;
   font-size: 28px;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .total-panel .asset-wrap {
   display: flex;
@@ -297,13 +299,14 @@ export default {
 .total-panel .asset-value {
   font-size: 56px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
   margin-left: 30px;
 }
 .total-panel .address-line {
   display: flex;
   align-items: center;
   margin-top: 20px;
+  cursor: pointer;
 }
 .total-panel .address-line .copy-icon {
   display: inline-block;
@@ -322,12 +325,12 @@ export default {
 .input-panel .input-title {
   font-size: 28px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
   margin-bottom: 20px;
 }
 .input-panel .input-wrap {
   padding-bottom: 16px;
-  border-bottom: 1px solid #DBDEE1;
+  border-bottom: 1px solid #dbdee1;
 }
 .input-panel .input-wrap .input {
   width: 100%;
@@ -350,7 +353,7 @@ export default {
 .input-panel .qr-wrap .qr-title {
   font-size: 36px;
   font-weight: normal;
-  color: #5B6881;
+  color: #5b6881;
   margin-bottom: 30px;
 }
 .input-panel .qr-wrap .arrow-back {
@@ -360,12 +363,12 @@ export default {
 }
 .input-panel .desc {
   margin-top: 30px;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .input-panel .tip-scan {
   font-size: 26px;
   font-weight: normal;
-  color: #5B6881;
+  color: #5b6881;
 }
 
 .journal-list {
@@ -378,12 +381,20 @@ export default {
   margin-bottom: 30px;
   font-size: 36px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 .journal-list .journal-title .tip {
+  margin-right: 0;
+  width: 160px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #ffa600;
+  border-radius: 30px;
   font-size: 28px;
   font-weight: 500;
-  color: #A65200;
+  color: #ffa600;
   cursor: pointer;
 }
 
@@ -395,7 +406,7 @@ export default {
   border-radius: 20px;
   font-size: 25px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .journal-list .journal-item .head {
   display: flex;
@@ -406,7 +417,7 @@ export default {
 .journal-list .journal-item .head .value {
   font-size: 30px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 
 .to-merchant {
@@ -418,5 +429,6 @@ export default {
   color: #ffa600;
   margin: 0 auto 40px;
   width: 200px;
+  cursor: pointer;
 }
 </style>

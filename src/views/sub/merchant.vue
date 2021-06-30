@@ -2,7 +2,7 @@
   <div class="merchant-wrap">
     <div class="title switch-wrap" @click="goToUser">
      <span>{{ $t('home.merchantSub') }}</span>
-      <img src="../../assets/img/role-switch.png" alt="" class="img">
+      <img src="../../assets/img/role-switch2.png" alt="" class="img">
     </div>
     <div class="c-panel total-panel">
       <div class="top">
@@ -24,10 +24,10 @@
       </div>
     </div>
     <div class="btns-wrap">
-      <button class="btn btn-light" :disabled="isUserBtnDisable" @click="handleToUserList('user')">
+      <button class="btn btn-dark" :disabled="isUserBtnDisable" @click="handleToUserList('user')">
         {{ ((merchantInfo.sellerUser || {}).length || 0) + $t('home.user') }}
       </button>
-      <button class="btn btn-light" :disabled="isRecoBtnDisable" @click="handleToReferrerList('referrer')">
+      <button class="btn btn-dark" :disabled="isRecoBtnDisable" @click="handleToReferrerList('referrer')">
         {{ ((merchantInfo.midSeller || {}).length || 0) + $t('home.referrer') }}
       </button>
     </div>
@@ -95,7 +95,7 @@ export default {
       }, 100);
 
       this.list = [];
-      this.reqMerchantInfo();
+      this.reqMerchantInfo(true);
     },
 
     getQRUrl() {
@@ -129,7 +129,7 @@ export default {
       return addr.slice(0, 6) + '......' + addr.slice(addr.length - 6);
     },
 
-    async reqMerchantInfo() {
+    async reqMerchantInfo(isInit = false) {
       try {
         const { data: { seller } } = await this.$apollo.query({
           query: gql`query ($id: ID!) {
@@ -149,7 +149,7 @@ export default {
         })
 
         this.merchantInfo = seller || {};
-        if (seller) {
+        if (seller && isInit) {
           this.onRefresh();
         }
         console.log('merchant', this.merchantInfo);
@@ -205,6 +205,7 @@ export default {
       // 将 loading 设置为 true，表示处于加载状态
       this.listLoading = true;
       this.reqWaterList();
+      this.reqMerchantInfo();
     },
 
     onLoad() {
@@ -246,14 +247,15 @@ export default {
   align-items: center;
   width: 260px;
   height: 68px;
-  border: 1px solid #FFFFFF;
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
+  cursor: pointer;
 }
 .switch-wrap .img {
   width: 40px;
   height: 40px;
+  margin-left: 10px;
 }
 .c-panel {
   background: #fff;
@@ -265,7 +267,7 @@ export default {
   padding: 80px 30px 70px;
   font-size: 28px;
   font-weight: 500;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .top {
   display: flex;
@@ -293,7 +295,7 @@ export default {
   margin-bottom: 60px;
   font-size: 50px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 .total-panel .address-line {
   display: flex;
@@ -317,11 +319,10 @@ export default {
 }
 .btns-wrap .btn {
   width: 300px;
-  line-height: 80px;
   text-align: center;
   font-size: 28px;
   font-weight: 500;
-  color: #FFA600;
+  cursor: pointer;
 }
 
 .journal-list {
@@ -331,7 +332,7 @@ export default {
   margin-bottom: 30px;
   font-size: 36px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 .journal-list .journal-item {
   margin-bottom: 28px;
@@ -341,7 +342,7 @@ export default {
   border-radius: 20px;
   font-size: 25px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .journal-list .journal-item .head {
   display: flex;
@@ -352,7 +353,7 @@ export default {
 .journal-list .journal-item .head .value {
   font-size: 30px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 
 </style>

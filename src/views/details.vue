@@ -331,7 +331,7 @@ export default {
   border-radius: 20px;
   font-size: 28px;
   font-weight: 500;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .content .tabs-wrap .active {
   line-height: 132px;
@@ -359,7 +359,7 @@ export default {
   bottom: 0;
   width: 670px;
   margin: 30px auto;
-  background: #FFFFFF;
+  background: #fff;
   border-radius: 20px;
   font-size: 36px;
   padding: 30px 56px;
@@ -380,7 +380,7 @@ export default {
 .coop-mail {
   font-size: 26px;
   font-weight: 500;
-  color: #ADB0CA;
+  color: #adb0ca;
   text-align: center;
   margin-bottom: 30px;
 }

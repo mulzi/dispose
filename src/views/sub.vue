@@ -16,16 +16,10 @@
 
 <script>
 import TheHeaderSub from '@/components/TheHeaderSub.vue';
-// import merchant from './sub/merchant.vue'
-// import referrer from './sub/referrer.vue'
-// import user from './sub/user.vue'
 
 export default {
   components: {
     TheHeaderSub,
-    // user,
-    // merchant,
-    // referrer,
   },
   data() {
     return {
@@ -71,7 +65,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 210px;
-  background: #FFA600;
+  background: #ffa600;
   border-radius: 0px 0px 60px 60px;
   z-index: 0;
 }

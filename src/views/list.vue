@@ -231,7 +231,7 @@ export default {
       if (this.$route.query.role === 'user') {
         this.queryUser(this.from);
       } else if (this.$route.query.role === 'referrer') {
-        this.queryreferrer(this.from);
+        this.queryReferrer(this.from);
       } else if (this.$route.query.role === 'cooperator') {
         this.queryMerchant(this.from);
       }
@@ -309,13 +309,13 @@ export default {
   text-align: left;
   font-size: 28px;
   font-weight: 400;
-  color: #091D42;
+  color: #091d42;
   padding: 20px 0;
 }
 .content .tr-head {
   font-size: 26px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .content .tr .no {
   flex: 2;
@@ -334,7 +334,7 @@ export default {
 .coop-mail {
   font-size: 24px;
   font-weight: 500;
-  color: #ADB0CA;
+  color: #adb0ca;
   text-align: center;
   margin-top: 30px;
   margin-bottom: 30px;

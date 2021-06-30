@@ -46,7 +46,7 @@ export default {
         width: width,
         height: width,
         colorDark: '#000000',
-        colorLight: '#ffffff',
+        colorLight: '#fff',
         correctLevel: QRCode.CorrectLevel.H,
       });
 
@@ -71,14 +71,14 @@ export default {
   margin-bottom: 50px;
   font-size: 30px;
   font-weight: 400;
-  color: #091D42;
+  color: #091d42;
   line-height: 48px;
   text-align: center;
 }
 .dialog-dispose-qr-wrap .desc {
   font-size: 26px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
   margin-top: 30px;
   margin-bottom: 30px;
   text-align: left;

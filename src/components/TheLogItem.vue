@@ -34,7 +34,7 @@ export default {
   border-radius: 20px;
   font-size: 24px;
   font-weight: 400;
-  color: #ADB0CA;
+  color: #adb0ca;
 }
 .the-log-item .head {
   display: flex;
@@ -45,7 +45,7 @@ export default {
 .the-log-item .head .value {
   font-size: 30px;
   font-weight: 500;
-  color: #091D42;
+  color: #091d42;
 }
 
 </style>
