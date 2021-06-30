@@ -1,8 +1,11 @@
 <template>
   <div class="referrer-wrap">
-    <div class="title switch-wrap" @click="goToUser">
-     <span>{{ $t('home.referrerSub') }}</span>
-      <img src="../../assets/img/role-switch.png" alt="" class="img">
+    <div class="role-wrap">
+      <span class="role">{{ $t('home.referrerSub') }}</span>
+      <div class="title switch-wrap" @click="goToUser">
+        <img src="../../assets/img/role-switch3.png" alt="" class="img">
+        <span>{{ $t('home.switchRole') }}</span>
+      </div>
     </div>
     <div class="c-panel total-panel">
       <div class="top">
@@ -257,21 +260,33 @@ export default {
   font-weight: bold;
   color: #fff;
 }
+.role-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.role-wrap .role {
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff;
+}
 .switch-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 260px;
-  height: 68px;
-  border: 1px solid #fff;
-  border-radius: 10px;
-  margin-left: auto;
-  margin-right: auto;
   cursor: pointer;
+  width: 162px;
+  height: 60px;
+  background: #FFFFFF;
+  border-radius: 30px;
+  font-size: 26px;
+  font-weight: 500;
+  color: #ffa600;
 }
 .switch-wrap .img {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
+  margin-right: 0;
 }
 .c-panel {
   background: #fff;
