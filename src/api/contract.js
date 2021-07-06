@@ -16,5 +16,5 @@ export const tsrAddress = isPro
   : '0x6ea8790d37483ebc494f52a99ae5cc3e122859b2'; // 测试服使用
 
 export const disposeAddress = isPro
-  ? '0xE44326EbCF2983a6904155A9B5E09B7Ff9df79f9' // FIXME:需要更改
+  ? '0x5c86B8A9ac78D27c98096CCa6F437fdd4748596E' // FIXME:需要更改
   : '0xE44326EbCF2983a6904155A9B5E09B7Ff9df79f9'; // 测试服使用
