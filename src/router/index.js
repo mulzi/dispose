@@ -48,6 +48,13 @@ const routes = [
     name: 'Details',
     component: () =>
       import(/* webpackChunkName: "list" */ '@/views/details.vue'),
+  }
+  ,
+  {
+    path: '/ceshi', // 明细
+    name: 'ceshi',
+    component: () =>
+        import(/* webpackChunkName: "list" */ '@/views/ceshi.vue'),
   },
   {
     path: '*',
