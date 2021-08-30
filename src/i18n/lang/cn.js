@@ -126,7 +126,7 @@ const cn = {
     week: '近7天',
     mounth1: '近一个月',
     mounth3: '近三个月',
-    all: '全都',
+    all: '全部',
     disposeDetail: '消费销毁明细',
     recommendDetail: '推荐成交明细',
     amount: '总计：',
