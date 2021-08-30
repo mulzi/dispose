@@ -48,7 +48,7 @@ export function formatTime(time = Date.now()) {
   const date = new Date(time);
   const padS = (n) => (n < 10 ? `0${n}` : n);
   return `${date.getFullYear()}-${padS(date.getMonth() + 1)}-${padS(date.getDate())}
-  ${date.getDate()}:${padS(date.getMinutes())}:${padS(date.getSeconds())}`;
+  ${date.getHours()}:${padS(date.getMinutes())}:${padS(date.getSeconds())}`;
 }
 
 /**
