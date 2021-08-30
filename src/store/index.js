@@ -14,7 +14,7 @@ const store = new Vuex.Store({
     appVm: null, // 持有app组件引用
     isShowGuide: !localStorage.getItem('gd'),
     inviter: localStorage.getItem('inviter'), // 邀请者的地址
-    address: '0xedf2906760BFb7d557F4081195508d50dCF0B37E',
+    address: '',
     chainId: '',
   },
   mutations: {
