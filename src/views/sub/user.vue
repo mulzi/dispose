@@ -168,8 +168,9 @@ export default {
                 amount
               }
             }`,
+          fetchPolicy: "no-cache",
           variables: {
-            id: tsrAddress + this.$store.state.address.toLocaleLowerCase()
+            id: tsrAddress + this.$store.state.address
           }
         })
 

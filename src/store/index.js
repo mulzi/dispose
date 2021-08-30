@@ -30,7 +30,7 @@ const store = new Vuex.Store({
       localStorage.setItem('chainId', chainId);
     },
     setAddress(state, address) {
-      state.address = address;
+      state.address = address.toLocaleLowerCase(); //钱包地址转为小写
       localStorage.setItem('address', address);
     },
     setLanguage(state, lang = 'en-US') {
@@ -83,7 +83,6 @@ const store = new Vuex.Store({
         Toast.clear();
         Toast.fail(i18n.messages[i18n.locale]['message']['connectError']);
       }
-      commit('setAddress', '0xedf2906760BFb7d557F4081195508d50dCF0B37E');
     },
     // 监听account 变化
     async onAccountsChanged({ commit, state }) {
@@ -101,7 +100,6 @@ const store = new Vuex.Store({
           Toast.fail(i18n.messages[i18n.locale]['message']['connectError']);
         }
       });
-      commit('setAddress', '0xedf2906760BFb7d557F4081195508d50dCF0B37E');
     },
     // 监听network 变化
     async onNetworkChanged({ dispatch, state }) {
