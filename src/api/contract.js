@@ -7,7 +7,7 @@ export const cookieDomain = isPro ? 'rosefin.tech' : 'inflex.top';
 
 export const web3Url = isPro
   ? 'https://etherscan.io'
-  : 'https://ropsten.etherscan.io';
+  : 'https://etherscan.io';
 
 export const assetManagementAddress = ''
 
@@ -17,4 +17,4 @@ export const tsrAddress = isPro
 
 export const disposeAddress = isPro
   ? '0x5c86B8A9ac78D27c98096CCa6F437fdd4748596E' // FIXME:需要更改
-  : '0xE44326EbCF2983a6904155A9B5E09B7Ff9df79f9'; // 测试服使用
+  : '0x5c86B8A9ac78D27c98096CCa6F437fdd4748596E'; // 测试服使用
